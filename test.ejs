@@ -1,0 +1,23 @@
+<h1>Prueba</h1>
+
+
+<% var importFile=function(file){
+    try{
+    var content=fs.readFileSync(file,'utf-8');
+    content=content.replace(tagRegex,openTag+"%");
+    content=content.replace(/{{\s*include (.+)\s*}}/g,openTag+"- importFile('$1')"+closeTag);
+   content=render(content,{importFile:importFile});
+   return content;
+   }catch(e){
+       console.log("error at import file",e);
+       return "";
+   }
+}
+%>
+
+
+Aquí incluyo cosas rarunas
+
+<%- importFile("test2.ejs"); %>
+
+## The End

@@ -1,1 +1,4 @@
-# meta-ejs
+XEJS
+====
+
+eXtreme EJS
