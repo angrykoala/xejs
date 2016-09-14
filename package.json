@@ -1,7 +1,7 @@
 {
   "name": "xejs",
-  "version": "1.0.0",
-  "description": "XEJS ====",
+  "version": "0.1.0",
+  "description": "Recursive templating. What could go wrong?",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
