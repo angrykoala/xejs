@@ -1,7 +1,8 @@
 XEJS
 ====
 _By @angrykoala_
-**eXtreme EJS**, 
+
+>**eXtreme EJS**
 
 XEJS allows you to render files with a custom tag-based language using [EJS](https://github.com/mde/ejs)
 
