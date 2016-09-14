@@ -10,28 +10,39 @@ var defaultTokens = [
     [/log\s(.+)/, "console.log(\"$1\")"]
 ];
 
-function generateTokenRegex(token,options) {
+function generateTokenRegex(token, options) {
     return new RegExp(options.openTag + "\\s*" + token.source + "\\s*" + options.closeTag, "g");
 }
 
-function replaceTokens(content,tokens,options) {
+function escapeToken(input) {
+    var res = input.replace(/(["'<%>=-])/g, "\\$1");
+    return res;
+}
+
+function replaceTokens(content, tokens, options) {
     for (var i = 0; i < tokens.length; i++) {
-        var reg = generateTokenRegex(tokens[i][0],options);
-        content = content.replace(reg, options.openTagEJS + tokens[i][1] + options.closeTagEJS);
+        var reg = generateTokenRegex(tokens[i][0], options);
+        var command=tokens[i][1];
+        content = content.replace(reg, function() {
+            var result=options.openTagEJS + command + options.closeTagEJS;
+            for(var i=1;i<arguments.length-2;i++){
+                var elem=escapeToken(arguments[i]);
+                result=result.replace("$"+i,elem);    
+            }
+            return result;
+        });
     }
     return content;
 }
 
-var xejs = function(file,options,parentPath) {
+var xejs = function(file, options, parentPath) {
     try {
         if (parentPath) file = path.join(parentPath, "../", file);
         parentPath = file;
         var content = fs.readFileSync(file, 'utf-8');
         var regexp = new RegExp(options.openTag + "\\s*include (.+)\\s*" + options.closeTag, "g");
         content = content.replace(options.tagRegex, options.openTagEJS + "%");
-        console.log(content);
-        content = replaceTokens(content,options.tokens,options);
-        console.log(content);
+        content = replaceTokens(content, options.tokens, options);
 
         content = render(content, {
             xejs: xejs,
@@ -46,9 +57,9 @@ var xejs = function(file,options,parentPath) {
 };
 
 module.exports = function(file, renderingOptions) {
-    var tokens=defaultTokens;
-    if(renderingOptions.tokens) tokens=tokens.concat(renderingOptions.tokens);
-    
+    var tokens = defaultTokens;
+    if (renderingOptions.tokens) tokens = tokens.concat(renderingOptions.tokens);
+
     var options = {
         openTagEJS: "<%",
         closeTagEJS: "%>",
@@ -57,5 +68,5 @@ module.exports = function(file, renderingOptions) {
         closeTag: renderingOptions.closeTag || "}}",
         tokens: tokens
     };
-    return xejs(file,options,"");
+    return xejs(file, options, "");
 };

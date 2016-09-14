@@ -5,7 +5,7 @@ var options={
     openTag: "{{",
     closeTag: "}}",
     tokens: [
-        [/say hello/,"= 'HOLA'"]       
+        [/bold\s(.+)/, "- '<b>$1</b>'"]
     ]
 };
 
