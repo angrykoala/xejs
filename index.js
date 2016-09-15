@@ -10,8 +10,10 @@ var defaultTokens = [
     [/log\s(.+)/, "console.log(\"$1\")"]
 ];
 
+var includeToken=defaultTokens[0];
+
 function generateTokenRegex(token, options) {
-    return new RegExp(options.openTag + "\\s*" + token.source + "\\s*" + options.closeTag, "g");
+    return new RegExp(options.openTag + "\\s*?" + token.source + "?\\s*?" + options.closeTag, "g");
 }
 
 function escapeToken(input) {
@@ -37,26 +39,26 @@ function replaceTokens(content, tokens, options) {
 
 var xejs = function(file, options, parentPath) {
     try {
-        if (parentPath) file = path.join(parentPath, "../", file);
-        parentPath = file;
-        var content = fs.readFileSync(file, 'utf-8');
-        var regexp = new RegExp(options.openTag + "\\s*include (.+)\\s*" + options.closeTag, "g");
+        var dirname=file;
+        if (parentPath) dirname = path.join(parentPath, "../", file);
+        var content = fs.readFileSync(dirname, 'utf-8');
         content = content.replace(options.tagRegex, options.openTagEJS + "%");
         content = replaceTokens(content, options.tokens, options);
 
-        content = render(content, {
-            xejs: xejs,
-            options: options,
-            parentPath: parentPath
-        });
+        var rendererOptions=options.args;
+        rendererOptions.xejs=xejs;
+        rendererOptions.parentPath=dirname;
+        rendererOptions.options=options;
+        content = render(content, rendererOptions);
+        rendererOptions.parentPath=parentPath;
         return content;
     } catch (e) {
-        console.log("XEJS error", e);
+        console.log("XEJS error:", e);
         return "";
     }
 };
 
-module.exports = function(file, renderingOptions) {
+module.exports = function(file, renderingOptions, args) {
     var tokens = defaultTokens;
     if (renderingOptions.tokens) tokens = tokens.concat(renderingOptions.tokens);
 
@@ -66,7 +68,8 @@ module.exports = function(file, renderingOptions) {
         tagRegex: /<%/g,
         openTag: renderingOptions.openTag || "{{",
         closeTag: renderingOptions.closeTag || "}}",
-        tokens: tokens
+        tokens: tokens,
+        args: args
     };
     return xejs(file, options, "");
 };
