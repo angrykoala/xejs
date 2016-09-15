@@ -45,7 +45,7 @@ var xejs = function(file, options, parentPath) {
         content = content.replace(options.tagRegex, options.openTagEJS + "%");
         content = replaceTokens(content, options.tokens, options);
 
-        var rendererOptions=options.args;
+        var rendererOptions=options.args || {};
         rendererOptions.xejs=xejs;
         rendererOptions.parentPath=dirname;
         rendererOptions.options=options;
@@ -69,7 +69,7 @@ module.exports = function(file, renderingOptions, args) {
         openTag: renderingOptions.openTag || "{{",
         closeTag: renderingOptions.closeTag || "}}",
         tokens: tokens,
-        args: args
+        args: args || {}
     };
     return xejs(file, options, "");
 };
