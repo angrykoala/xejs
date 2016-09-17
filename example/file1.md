@@ -1,10 +1,12 @@
 # Example File
 
-In this file I will include the second file:
+In this file I will include the second file twice:
 
-{{ include file2.md }}
+{{ Include file2.md }}
+
+
+
+{{ INCLUDE file2.md }}
 
 
 This is the end of the full document
-
-{{ include file2.md }}
