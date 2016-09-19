@@ -2,7 +2,10 @@ var xejs=require('../index.js');
 var fs=require('fs');
 
 var options={
-tokens:[[/loop[\s]*\((.*),([0-9]*)\)/,"- loop('$1','$2')"]]
+tokens:[
+[/loop[\s]*\((.*),([0-9]*)\)/,"- loop('$1','$2')"],
+[/message/,"= msg"]
+]
 };
 
 
@@ -14,5 +17,5 @@ function loop(data,times){
     return res;
 }
 
-var parsedFile=xejs(__dirname+'/file1.md',options,{loop:loop});
+var parsedFile=xejs(__dirname+'/file1.md',options,{loop:loop,msg: "Hello World"});
 fs.writeFileSync('resultFile.md',parsedFile);

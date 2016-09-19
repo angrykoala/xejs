@@ -4,45 +4,8 @@ var path = require('path');
 
 var render = ejs.render;
 
+var tagParser=require('./app/tag_parser');
 
-var defaultTokens = [
-    [/include\s+(\S+)/i, "- xejs(\"$1\",options,parentPath)"]
-];
-
-var includeToken = defaultTokens[0];
-
-function generateTokenRegex(token, options) {
-    var modifier="g";
-    if(token.ignoreCase) modifier+="i";
-    
-    return new RegExp(options.openTag + "\\s*?" + token.source + "?\\s*?" + options.closeTag, modifier);
-}
-
-function escapeToken(input) {
-    var res = input.replace(/(["'<%>=-])/g, "\\$1");
-    return res;
-}
-
-
-
-function replaceTokens(content, tokens, options) {
-    function replaceCallback() {
-        var result = options.openTagEJS + command + options.closeTagEJS;
-        for (var i = 1; i < arguments.length - 2; i++) {
-            var elem = escapeToken(arguments[i]);
-            result = result.replace("$" + i, elem);
-        }
-        return result;
-    }
-
-
-    for (var i = 0; i < tokens.length; i++) {
-        var reg = generateTokenRegex(tokens[i][0], options);
-        var command = tokens[i][1];
-        content = content.replace(reg, replaceCallback);
-    }
-    return content;
-}
 
 var xejs = function(file, options, parentPath) {
     try {
@@ -50,7 +13,7 @@ var xejs = function(file, options, parentPath) {
         if (parentPath) dirname = path.join(parentPath, "../", file);
         var content = fs.readFileSync(dirname, 'utf-8');
         content = content.replace(options.tagRegex, options.openTagEJS + "%");
-        content = replaceTokens(content, options.tokens, options);
+        content = tagParser(content, options.tokens, options);
 
         var rendererOptions = options.args || {};
         rendererOptions.xejs = xejs;
@@ -66,7 +29,7 @@ var xejs = function(file, options, parentPath) {
 };
 
 module.exports = function(file, renderingOptions, args) {
-    var tokens = defaultTokens;
+    var tokens = tagParser.defaultTags;
     if (renderingOptions.tokens) tokens = tokens.concat(renderingOptions.tokens);
 
     var options = {

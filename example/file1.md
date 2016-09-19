@@ -8,5 +8,6 @@ In this file I will include the second file twice:
 
 {{ INCLUDE file2.md }}
 
-
 This is the end of the full document
+
+{{ message }}

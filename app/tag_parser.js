@@ -1,0 +1,43 @@
+// Token manipulation
+
+
+
+var defaultTokens = [
+    [/include\s+(\S+)/i, "- xejs(\"$1\",options,parentPath)"]
+];
+
+function generateTagRegex(token, options) {
+    var modifier = "g";
+    if (token.ignoreCase) modifier += "i";
+
+    return new RegExp(options.openTag + "\\s*?" + token.source + "?\\s*?" + options.closeTag, modifier);
+}
+
+function escapeToken(input) {
+    var res = input.replace(/(["'<%>=-])/g, "\\$1");
+    return res;
+}
+
+
+function replaceTags(content, tokens, options) {
+    function replaceCallback() {
+        var result = options.openTagEJS + command + options.closeTagEJS;
+        for (var i = 1; i < arguments.length - 2; i++) {
+            var elem = escapeToken(arguments[i]);
+            result = result.replace("$" + i, elem);
+        }
+        return result;
+    }
+
+
+    for (var i = 0; i < tokens.length; i++) {
+        var reg = generateTagRegex(tokens[i][0], options);
+        var command = tokens[i][1];
+        content = content.replace(reg, replaceCallback);
+    }
+    return content;
+}
+
+replaceTags.defaultTags = defaultTokens;
+
+module.exports = replaceTags;

@@ -38,7 +38,7 @@ fs.writeFileSync('example/prueba.html',file);
 This code will render all {{ bold [my text] }} into html `<b>` text
 
 ### Provided tags
-The tag `include` isalready implemented, allowing you to load (and render) another file.
+The tag `include` is already implemented, allowing you to load (and render) another file.
 
 ### Examples:
 Using the tags delimiters `{{ ... }}`
