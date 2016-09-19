@@ -1,6 +1,4 @@
-// Token manipulation
-
-
+// Tag manipulation
 
 var defaultTokens = [
     [/include\s+(\S+)/i, "- xejs(\"$1\",options,parentPath)"]

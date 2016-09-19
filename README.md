@@ -2,6 +2,8 @@ XEJS
 ====
 _By @angrykoala_
 
+[![npm version](https://badge.fury.io/js/xejs.svg)](https://badge.fury.io/js/xejs)
+
 >**eXtreme EJS**
 
 XEJS allows you to render files with a custom tag-based language using [EJS](https://github.com/mde/ejs)
