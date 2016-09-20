@@ -11,3 +11,7 @@ In this file I will include the second file twice:
 This is the end of the full document
 
 {{ message }}
+
+{{
+    message
+    }}

@@ -7,8 +7,11 @@ var defaultTokens = [
 function generateTagRegex(token, options) {
     var modifier = "g";
     if (token.ignoreCase) modifier += "i";
+    var tokenString = token.source;
+    tokenString = tokenString.replace(/\\s/g, "\ ");
+    tokenString = "\\ *?" + tokenString + "?\\ *?";
 
-    return new RegExp(options.openTag + "\\s*?" + token.source + "?\\s*?" + options.closeTag, modifier);
+    return new RegExp(options.openTag + tokenString + options.closeTag, modifier);
 }
 
 function escapeToken(input) {
