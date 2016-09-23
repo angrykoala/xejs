@@ -17,8 +17,10 @@ function loop(data, times) {
     return res;
 }
 
-var parsedFile = xejs(__dirname + '/file1.md', options, {
+xejs(__dirname + '/file1.md', options, {
     loop: loop,
     msg: "Hello World"
+}, function(res, err) {
+    if (err) console.log(err)
+    else fs.writeFileSync('resultFile.md', res);
 });
-fs.writeFileSync('resultFile.md', parsedFile);

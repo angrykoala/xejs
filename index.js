@@ -4,31 +4,26 @@ var path = require('path');
 
 var render = ejs.render;
 
-var tagParser=require('./app/tag_parser');
+var tagParser = require('./app/tag_parser');
 
 
 var xejs = function(file, options, parentPath) {
-    try {
-        var dirname = file;
-        if (parentPath) dirname = path.join(parentPath, "../", file);
-        var content = fs.readFileSync(dirname, 'utf-8');
-        content = content.replace(options.tagRegex, options.openTagEJS + "%");
-        content = tagParser(content, options.tokens, options);
+    var dirname = file;
+    if (parentPath) dirname = path.join(parentPath, "../", file);
+    var content = fs.readFileSync(dirname, 'utf-8');
+    content = content.replace(options.tagRegex, options.openTagEJS + "%");
+    content = tagParser(content, options.tokens, options);
 
-        var rendererOptions = options.args || {};
-        rendererOptions.xejs = xejs;
-        rendererOptions.parentPath = dirname;
-        rendererOptions.options = options;
-        content = render(content, rendererOptions);
-        rendererOptions.parentPath = parentPath;
-        return content;
-    } catch (e) {
-        console.log("XEJS error:", e);
-        return "";
-    }
+    var rendererOptions = options.args || {};
+    rendererOptions.xejs = xejs;
+    rendererOptions.parentPath = dirname;
+    rendererOptions.options = options;
+    content = render(content, rendererOptions);
+    rendererOptions.parentPath = parentPath;
+    return content;
 };
 
-module.exports = function(file, renderingOptions, args) {
+module.exports = function(file, renderingOptions, args, done) {
     var tokens = tagParser.defaultTags;
     if (renderingOptions.tokens) tokens = tokens.concat(renderingOptions.tokens);
 
@@ -41,5 +36,12 @@ module.exports = function(file, renderingOptions, args) {
         tokens: tokens,
         args: args || {}
     };
-    return xejs(file, options, "");
+    var res = null;
+    var err = null;
+    try {
+        res = xejs(file, options, "");
+    } catch (e) {
+        err=e;
+    }
+    return done(res,err);
 };
