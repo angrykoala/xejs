@@ -43,5 +43,5 @@ module.exports = function(file, renderingOptions, args, done) {
     } catch (e) {
         err=e;
     }
-    return done(res,err);
+    return done(err,res);
 };

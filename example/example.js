@@ -20,7 +20,7 @@ function loop(data, times) {
 xejs(__dirname + '/file1.md', options, {
     loop: loop,
     msg: "Hello World"
-}, function(res, err) {
-    if (err) console.log(err)
+}, function(err,res) {
+    if (err) console.log(err);
     else fs.writeFileSync('resultFile.md', res);
 });
