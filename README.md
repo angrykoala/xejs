@@ -3,6 +3,9 @@ XEJS
 _By @angrykoala_
 
 [![npm version](https://badge.fury.io/js/xejs.svg)](https://badge.fury.io/js/xejs)
+[![Build Status](https://travis-ci.org/angrykoala/xejs.svg?branch=master)](https://travis-ci.org/angrykoala/xejs)
+[![codecov](https://codecov.io/gh/angrykoala/xejs/branch/master/graph/badge.svg)](https://codecov.io/gh/angrykoala/xejs)
+
 
 >**eXtreme EJS**
 
