@@ -28,7 +28,7 @@ module.exports = function(file, renderingOptions, args, done) {
     if (renderingOptions.tokens) tokens = tokens.concat(renderingOptions.tokens);
 
     var options = {
-        openTagEJS: "<%",
+        openTagEJS: "<%- ",
         closeTagEJS: "%>",
         tagRegex: /<%/g,
         openTag: renderingOptions.openTag || "{{",

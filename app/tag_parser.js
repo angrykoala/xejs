@@ -1,7 +1,7 @@
 // Tag manipulation
 
 var defaultTokens = [
-    [/include\s+(\S+)/i, "- xejs(\"$1\",options,parentPath)"]
+    [/include\s+(\S+)/i, "xejs(\"$1\",options,parentPath)"]
 ];
 
 function generateTagRegex(token, options) {

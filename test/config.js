@@ -10,8 +10,8 @@ function loop(data, times) {
 module.exports = {
     options: {
         tokens: [
-            [/loop[\s]*\((.*),([0-9]*)\)/, "- loop('$1','$2')"],
-            [/message/, "= msg"]
+            [/loop[\s]*\((.*),([0-9]*)\)/, "loop('$1','$2')"],
+            [/message/, "msg"]
         ]
     },
     args: {
