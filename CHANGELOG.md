@@ -1,6 +1,8 @@
 0.4.0 / xxxx-xx-xx
 ==================
 
+  * Ejs tags escape fixed
+  * No escape ejs tags option added
   * Xejs arguments are now optional
   * Readme improved
   * Custom commands now won't need the ejs tag appendix (`-`,`=`)

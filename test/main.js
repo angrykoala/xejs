@@ -41,7 +41,7 @@ describe("Main test", function() {
 
     it("No ejs escape option", function(done) {
         assert.ok(xejs);
-        var options = Object.assign({}, config.options);
+        var options = config.options;
         options.ejsEscape = false;
         xejs(__dirname + '/file3.md', options, config.args, function(err, res) {
             assert.notOk(err);
