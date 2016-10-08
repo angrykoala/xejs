@@ -3,12 +3,14 @@ var assert = require('chai').assert;
 
 var xejs = require('../index.js');
 
-var config=require('./config');
+var config = require('./config');
+
+
 
 describe("Main test", function() {
-    it("Exaple file", function(done) {
-        this.timeout(5000);
-        var regex=config.regex;
+    this.timeout(5000);
+    var regex = config.regex;
+    it("Example file", function(done) {
         assert.ok(xejs);
         xejs(__dirname + '/file1.md', config.options, config.args, function(err, res) {
             assert.notOk(err);
@@ -21,6 +23,20 @@ describe("Main test", function() {
                 assert.notMatch(res, regex.notMatch[i]);
             }
             done();
+        });
+    });
+    it("No arguments provided", function(done) {
+        xejs(__dirname + '/file1.md', function(err, res) {
+            assert.notOk(err);
+            assert.ok(res);
+            xejs(__dirname + '/file1.md', {}, function(err, res2) {
+                assert.notOk(err);
+                assert.ok(res2);
+                assert.strictEqual(res, res2);
+                assert.match(res, /Second\sfile\scontent/);
+                assert.match(res, /\{\{\s*message\s*\}\}/)
+                done();
+            });
         });
     });
 });

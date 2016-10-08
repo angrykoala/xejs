@@ -26,6 +26,8 @@ var xejs = function(file, options, parentPath) {
 module.exports = function(file, renderingOptions, args, done) {
     var tokens = tagParser.defaultTags;
     if (renderingOptions.tokens) tokens = tokens.concat(renderingOptions.tokens);
+    if(!done && typeof args==="function") done=args;
+    else if(!done && !args &&  typeof renderingOptions==="function") done=renderingOptions;
 
     var options = {
         openTagEJS: "<%- ",
@@ -43,5 +45,5 @@ module.exports = function(file, renderingOptions, args, done) {
     } catch (e) {
         err=e;
     }
-    return done(err,res);
+    if(done) return done(err,res);
 };

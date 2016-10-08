@@ -29,7 +29,6 @@ module.exports = {
         notMatch: [
             /\{\{ Include file2\.md \}\}/i,
             /\{\{include \.\.\/package\.json\}\}/i
-
         ]
     }
 };
