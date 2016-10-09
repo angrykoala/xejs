@@ -5,8 +5,6 @@ var xejs = require('../index.js');
 
 var config = require('./config');
 
-
-
 describe("Main test", function() {
     this.timeout(5000);
     var regex = config.regex;
@@ -25,6 +23,7 @@ describe("Main test", function() {
             done();
         });
     });
+
     it("No arguments provided", function(done) {
         xejs(__dirname + '/file1.md', function(err, res) {
             assert.notOk(err);
@@ -34,7 +33,28 @@ describe("Main test", function() {
                 assert.ok(res2);
                 assert.strictEqual(res, res2);
                 assert.match(res, /Second\sfile\scontent/);
-                assert.match(res, /\{\{\s*message\s*\}\}/)
+                assert.match(res, /\{\{\s*message\s*\}\}/);
+                done();
+            });
+        });
+    });
+
+    it("No ejs escape option", function(done) {
+        assert.ok(xejs);
+        var options = config.options;
+        options.ejsEscape = false;
+        xejs(__dirname + '/file3.md', options, config.args, function(err, res) {
+            assert.notOk(err);
+            assert.ok(res);
+            assert.match(res, /Hello\sWorld\s*Hello\sWorld/);
+            assert.notMatch(res, /<%-\s*msg\s*%>/);
+            options.ejsEscape = true;
+            xejs(__dirname + '/file3.md', options, config.args, function(err, res) {
+                assert.notOk(err);
+                assert.ok(res);
+                assert.match(res, /Hello\sWorld/);
+                assert.notMatch(res, /Hello\sWorld\s*Hello\sWorld/);
+                assert.match(res, /<%-\s*msg\s*%>/);
                 done();
             });
         });

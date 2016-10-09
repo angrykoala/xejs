@@ -24,7 +24,8 @@ module.exports = {
             /Second file twice:\s+(## Second file\s+Second file content\s+){2}/,
             /message\s+Hello World\s+\{\{\s+message\s+\}\}/,
             /Now a custom command loop:\s+(Inside loop\s){10}\s*loop end/,
-            /A code file:\s+```js\s+{[\s\S]*\}\s+```\s+_package\.json_/
+            /A code file:\s+```js\s+{[\s\S]*\}\s+```\s+_package\.json_/,
+            /<%\sshould\snot\sbe\sparsed\s%>/
         ],
         notMatch: [
             /\{\{ Include file2\.md \}\}/i,

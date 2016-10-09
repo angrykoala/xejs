@@ -11,7 +11,7 @@ var xejs = function(file, options, parentPath) {
     var dirname = file;
     if (parentPath) dirname = path.join(parentPath, "../", file);
     var content = fs.readFileSync(dirname, 'utf-8');
-    content = content.replace(options.tagRegex, options.openTagEJS + "%");
+    if(options.ejsEscape!==false) content = content.replace(options.tagRegex, "<%%");
     content = tagParser(content, options.tokens, options);
 
     var rendererOptions = options.args || {};
@@ -35,6 +35,7 @@ module.exports = function(file, renderingOptions, args, done) {
         tagRegex: /<%/g,
         openTag: renderingOptions.openTag || "{{",
         closeTag: renderingOptions.closeTag || "}}",
+        ejsEscape: renderingOptions.ejsEscape===false ? false:true,
         tokens: tokens,
         args: args || {}
     };

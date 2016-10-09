@@ -19,7 +19,6 @@ function escapeToken(input) {
     return res;
 }
 
-
 function replaceTags(content, tokens, options) {
     function replaceCallback() {
         var result = options.openTagEJS + command + options.closeTagEJS;

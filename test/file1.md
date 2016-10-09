@@ -27,3 +27,5 @@ A code file:
 {{include ../package.json}}
 ```
 _package.json_
+
+<% should not be parsed %>
