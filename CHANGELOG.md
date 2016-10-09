@@ -1,4 +1,4 @@
-0.4.0 / xxxx-xx-xx
+0.4.0 / 2016-10-09
 ==================
 
   * Ejs tags escape fixed
