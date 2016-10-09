@@ -8,9 +8,18 @@ var tagParser = require('./app/tag_parser');
 
 
 var xejs = function(file, options, parentPath) {
-    var dirname = file;
-    if (parentPath) dirname = path.join(parentPath, "../", file);
-    var content = fs.readFileSync(dirname, 'utf-8');
+    var content;
+
+    if(options.stringRender) {
+        // Render contents from file var
+        content = file;
+    } else {
+        // Fetch file contents
+        var dirname = file;
+        if (parentPath) dirname = path.join(parentPath, "../", file);
+        content = fs.readFileSync(dirname, 'utf-8');
+    }
+    
     if(options.ejsEscape!==false) content = content.replace(options.tagRegex, "<%%");
     content = tagParser(content, options.tokens, options);
 
@@ -36,6 +45,7 @@ module.exports = function(file, renderingOptions, args, done) {
         openTag: renderingOptions.openTag || "{{",
         closeTag: renderingOptions.closeTag || "}}",
         ejsEscape: renderingOptions.ejsEscape===false ? false:true,
+        stringRender: renderingOptions.stringRender || false,
         tokens: tokens,
         args: args || {}
     };

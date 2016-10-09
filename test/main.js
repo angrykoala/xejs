@@ -59,4 +59,18 @@ describe("Main test", function() {
             });
         });
     });
+
+    it('Render from a string', function(done) {
+        var fileContents = fs.readFileSync(__dirname + '/file1.md', 'utf-8');
+
+        xejs(fileContents, { stringRender: true }, function(err, res) {
+            try {
+                assert.notOk(err);
+                assert.ok(res);
+                done();
+            } catch(e) {
+                done(e);
+            }
+        });
+    });
 });
