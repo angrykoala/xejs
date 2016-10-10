@@ -4,6 +4,14 @@ var defaultTokens = [
     [/include\s+(\S+)/i, "xejs(\"$1\",options,parentPath)"]
 ];
 
+function stripComments(content, commentTags) {
+    commentTags.open = commentTags.open || "{{#";
+    commentTags.close = commentTags.close || "}}";
+    var commentRegex = new RegExp(commentTags.open + "[\s\S]*?" + commentTags.close, "g");
+    content = content.replace(commentRegex, '');
+    return content;
+}
+
 function generateTagRegex(token, options) {
     var modifier = "g";
     if (token.ignoreCase) modifier += "i";
@@ -29,6 +37,7 @@ function replaceTags(content, tokens, options) {
         return result;
     }
 
+    content = stripComments(content, options.commentTags);
 
     for (var i = 0; i < tokens.length; i++) {
         var reg = generateTagRegex(tokens[i][0], options);
