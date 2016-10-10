@@ -35,7 +35,11 @@ var options={
     closeTag: "}}",
     tokens: [
         [/bold\s(.+)/, "'<b>$1</b>'"]
-    ]
+    ],
+    comentTags: {
+        open: "{{#",
+        close: "}}"
+    }
 };
 
 
@@ -52,7 +56,7 @@ The tag `include` is already implemented, allowing you to recursively load (and 
 ### Examples:
 Using the tags delimiters `{{ ... }}`
 
-* `/[Tt]itle/` - `"title"` will translate any tag of the type `{{ title }}` or `{{Title}}` into a valid `<%- title %>` ejs tag which will be rendered by ejs. Then, ejs will use yout `title` argument (wether is a variable or a function) to generate the content. 
+* `/[Tt]itle/` - `"title"` will translate any tag of the type `{{ title }}` or `{{Title}}` into a valid `<%- title %>` ejs tag which will be rendered by ejs. Then, ejs will use yout `title` argument (wether is a variable or a function) to generate the content.
 
 * `/[Tt]itle2/` - `"'title'"` will render all `{{title}}` tags into the string `"title"`, without the need of extra arguments.
 
