@@ -36,7 +36,7 @@ var options={
     tokens: [
         [/bold\s(.+)/, "'<b>$1</b>'"]
     ],
-    comentTags: {
+    commentTags: {
         open: "{{#",
         close: "}}"
     }
