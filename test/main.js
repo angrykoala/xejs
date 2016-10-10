@@ -59,4 +59,12 @@ describe("Main test", function() {
             });
         });
     });
+
+    it("Comment tags", function(done) {
+        xejs(__dirname + '/file4.md', function(err, res) {
+            assert.notOk(err);
+            assert.ok(res);
+            assert.notMatch(res, /{{#[\s\S]*?}}/);
+        });
+    });
 });
