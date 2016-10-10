@@ -64,7 +64,9 @@ describe("Main test", function() {
         xejs(__dirname + '/file4.md', function(err, res) {
             assert.notOk(err);
             assert.ok(res);
-            assert.notMatch(res, /{{#[\s\S]*?}}/);
+            assert.match(res,/#\sComment\stags\s+#\sNot\scomment\stags/);
+            assert.match(res,/#\sNot\scomment\stags\s+{{\s#\snot\scomment\stag}}\s*{{#\sMultiline\s+not\ssupported}}/);
+            done();
         });
     });
 });

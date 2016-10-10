@@ -1,7 +1,10 @@
 # Comment tags
 {{#Inline comment }}
-{{#Multiline
-comment }}
 {{#Comment-without-space}}
 {{# Emoji 💩 comment }}
 {{# With } part of ending tag }}
+
+# Not comment tags
+{{ # not comment tag}}
+{{# Multiline
+not supported}}

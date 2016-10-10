@@ -33,13 +33,10 @@ var fs= require('fs');
 var options={
     openTag: "{{",
     closeTag: "}}",
+    commentTag: "#",
     tokens: [
         [/bold\s(.+)/, "'<b>$1</b>'"]
-    ],
-    commentTags: {
-        open: "{{#",
-        close: "}}"
-    }
+    ]
 };
 
 
@@ -52,6 +49,8 @@ This code will render all {{ bold [my text] }} into html `<b>` text
 
 ### Default tags
 The tag `include` is already implemented, allowing you to recursively load (and render) other files.
+
+Any tag starting on commentTag will not be rendered (`{{# a comment}}`)
 
 ### Examples:
 Using the tags delimiters `{{ ... }}`
