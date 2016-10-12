@@ -50,10 +50,10 @@ module.exports = function(file, renderingOptions, args, done) {
     else {
         return new Promise(function(resolve, reject) {
             if (err) {
-              reject(err);
-              return;
+                reject(err);
+            } else {
+                resolve(res);
             }
-            resolve(res);
         });
     }
 };
