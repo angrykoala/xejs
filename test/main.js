@@ -59,4 +59,16 @@ describe("Main test", function() {
             });
         });
     });
+
+    it("return promise when does not pass the done function", function(done) {
+        xejs(`${__dirname}/file1.md`, config.options, config.args).then(function(res) {
+            done();
+        });
+    });
+
+    it("return rejected promise when has an error", function(done) {
+        xejs(`${__dirname}/notfound.md`, config.options, config.args).then(function() {}, function(err) {
+            done();
+        });
+    });
 });
