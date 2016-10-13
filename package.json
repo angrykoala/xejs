@@ -22,7 +22,11 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "istanbul": "^0.4.5",
-    "mocha": "^3.0.2"
+    "mocha": "^3.0.2",
+    "auto-changelog": "*"
+  },
+  "scripts": {
+    "version": "auto-changelog --package; git add CHANGELOG.md"
   },
   "engines": {
     "node": ">= 0.12.15"
