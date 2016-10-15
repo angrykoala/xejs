@@ -1,6 +1,7 @@
 0.5.0 / ----
 ============
 
+  * Promises interface supported
   * Comment tags supported (default to `{{# comment }}`)
 
 0.4.0 / 2016-10-09
