@@ -25,7 +25,9 @@ module.exports = {
             /message\s+Hello World\s+\{\{\s+message\s+\}\}/,
             /Now a custom command loop:\s+(Inside loop\s){10}\s*loop end/,
             /A code file:\s+```js\s+{[\s\S]*\}\s+```\s+_package\.json_/,
-            /<%\sshould\snot\sbe\sparsed\s%>/
+            /<%\sshould\snot\sbe\sparsed\s%>/,
+            /## Nested include\s+## Included file\s+## Second file\s+Second file content/,
+            /## Inline include\sThis ## Second file\s+Second file content\s contains file2/
         ],
         notMatch: [
             /\{\{ Include file2\.md \}\}/i,

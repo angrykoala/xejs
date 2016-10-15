@@ -1,3 +1,11 @@
+0.5.0 / 2016-10-15
+==================
+
+  * Include tests improved
+  * Added a CONTRIBUTING file to the project
+  * Promises interface supported
+  * Comment tags supported (default to `{{# comment }}`)
+
 0.4.0 / 2016-10-09
 ==================
 
