@@ -1,6 +1,6 @@
 {
   "name": "xejs",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Recursive templating. What could go wrong?",
   "main": "index.js",
   "scripts": {
