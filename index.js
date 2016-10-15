@@ -6,22 +6,35 @@ var render = ejs.render;
 
 var tagParser = require('./app/tag_parser');
 
-
-var xejs = function(file, options, parentPath) {
+function getDirname(file, parentPath) {
     var dirname = file;
     if (parentPath) dirname = path.join(parentPath, "../", file);
+    return dirname;
+}
+
+function parseContent(dirname, options) {
     var content = fs.readFileSync(dirname, 'utf-8');
     if (options.ejsEscape !== false) content = content.replace(options.tagRegex, "<%%");
-    content = tagParser(content, options.tokens, options);
+    return tagParser(content, options.tokens, options);
+}
 
+function setupOptions(dirname, options) {
     var rendererOptions = options.args || {};
     rendererOptions.xejs = xejs;
     rendererOptions.parentPath = dirname;
     rendererOptions.options = options;
+    return rendererOptions;
+}
+
+function xejs(file, options, parentPath) {
+    var dirname = getDirname(file, parentPath);
+    var content = parseContent(dirname, options);
+    var rendererOptions = setupOptions(dirname, options);
     content = render(content, rendererOptions);
-    rendererOptions.parentPath = parentPath;
+    rendererOptions.parentPath = parentPath; //This may not be necessary anymore, if necessary, add tests!
     return content;
-};
+}
+
 
 module.exports = function(file, renderingOptions, args, done) {
     var tokens = tagParser.defaultTags;
@@ -43,7 +56,7 @@ module.exports = function(file, renderingOptions, args, done) {
     var res = null;
     var err = null;
     try {
-        res = xejs(file, options, "");
+        res = xejs(file, options);
     } catch (e) {
         err = e;
     }
