@@ -59,13 +59,25 @@ describe("Main test", function() {
             });
         });
     });
-
     it("Comment tags", function(done) {
         xejs(__dirname + '/file4.md', function(err, res) {
             assert.notOk(err);
             assert.ok(res);
-            assert.match(res,/#\sComment\stags\s+#\sNot\scomment\stags/);
-            assert.match(res,/#\sNot\scomment\stags\s+{{\s#\snot\scomment\stag}}\s*{{#\sMultiline\s+not\ssupported}}/);
+            assert.match(res, /#\sComment\stags\s+#\sNot\scomment\stags/);
+            assert.match(res, /#\sNot\scomment\stags\s+{{\s#\snot\scomment\stag}}\s*{{#\sMultiline\s+not\ssupported}}/);
+            done();
+        });
+    });
+    it("Return Promise", function(done) {
+        xejs(__dirname + "/file1.md", config.options, config.args).then(function(res) {
+            assert.ok(res);
+            done();
+        });
+    });
+
+    it("Rejected Promise", function(done) {
+        xejs(__dirname + "/notfound.md", config.options, config.args).then(function() {}, function(err) {
+            assert.ok(err);
             done();
         });
     });

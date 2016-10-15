@@ -48,4 +48,13 @@ module.exports = function(file, renderingOptions, args, done) {
         err=e;
     }
     if(done) return done(err,res);
+    else {
+        return new Promise(function(resolve, reject) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(res);
+            }
+        });
+    }
 };
