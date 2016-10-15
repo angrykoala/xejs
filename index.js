@@ -31,7 +31,7 @@ function xejs(file, options, parentPath) {
     var content = parseContent(dirname, options);
     var rendererOptions = setupOptions(dirname, options);
     content = render(content, rendererOptions);
-    rendererOptions.parentPath = parentPath; //This may not be necessary anymore, if necessary, add tests!
+    rendererOptions.parentPath = parentPath;
     return content;
 }
 
