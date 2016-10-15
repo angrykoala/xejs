@@ -11,7 +11,7 @@ var xejs = function(file, options, parentPath) {
     var dirname = file;
     if (parentPath) dirname = path.join(parentPath, "../", file);
     var content = fs.readFileSync(dirname, 'utf-8');
-    if(options.ejsEscape!==false) content = content.replace(options.tagRegex, "<%%");
+    if (options.ejsEscape !== false) content = content.replace(options.tagRegex, "<%%");
     content = tagParser(content, options.tokens, options);
 
     var rendererOptions = options.args || {};
@@ -26,8 +26,8 @@ var xejs = function(file, options, parentPath) {
 module.exports = function(file, renderingOptions, args, done) {
     var tokens = tagParser.defaultTags;
     if (renderingOptions.tokens) tokens = tokens.concat(renderingOptions.tokens);
-    if(!done && typeof args==="function") done=args;
-    else if(!done && !args &&  typeof renderingOptions==="function") done=renderingOptions;
+    if (!done && typeof args === "function") done = args;
+    else if (!done && !args && typeof renderingOptions === "function") done = renderingOptions;
 
     var options = {
         openTagEJS: "<%- ",
@@ -36,7 +36,7 @@ module.exports = function(file, renderingOptions, args, done) {
         openTag: renderingOptions.openTag || "{{",
         closeTag: renderingOptions.closeTag || "}}",
         commentTag: renderingOptions.commentTag || "#",
-        ejsEscape: renderingOptions.ejsEscape===false ? false:true,
+        ejsEscape: renderingOptions.ejsEscape === false ? false : true,
         tokens: tokens,
         args: args || {}
     };
@@ -45,16 +45,14 @@ module.exports = function(file, renderingOptions, args, done) {
     try {
         res = xejs(file, options, "");
     } catch (e) {
-        err=e;
+        err = e;
     }
-    if(done) return done(err,res);
-    else {
-        return new Promise(function(resolve, reject) {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(res);
-            }
-        });
-    }
+    if (done) return done(err, res);
+    return new Promise(function(resolve, reject) {
+        if (err) {
+            reject(err);
+        } else {
+            resolve(res);
+        }
+    });
 };
