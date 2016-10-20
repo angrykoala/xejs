@@ -1,6 +1,8 @@
 0.6.0 / ----------
 ==================
 
+  * Support for rendering from string
+  * Node.js updated in CI tests
 
 0.5.0 / 2016-10-15
 ==================
