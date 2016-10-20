@@ -13,7 +13,7 @@ function getFilePath(file, parentPath) {
     return filePath;
 }
 
-function loadFile(filePath){
+function loadFile(filePath) {
     return fs.readFileSync(filePath, 'utf-8');
 }
 
@@ -30,10 +30,10 @@ function optionsSetup(filePath, options) {
     return rendererOptions;
 }
 
-
+//Avoid repeating code
 function xejs(file, options, parentPath) {
     var filePath = getFilePath(file, parentPath);
-    var content= loadFile(filePath);
+    var content = loadFile(filePath);
     content = parseContent(content, options);
     var rendererOptions = optionsSetup(filePath, options);
     content = ejsRenderer(content, rendererOptions);
@@ -41,8 +41,9 @@ function xejs(file, options, parentPath) {
     return content;
 }
 
-function renderString(content,options, includePath){
-    includePath=includePath || process.cwd();
+//Avoid repeating code
+function renderString(content, options, includePath) {
+    includePath = includePath || process.cwd();
     includePath += "/file";
     content = parseContent(content, options);
     var rendererOptions = optionsSetup(includePath, options);
@@ -51,7 +52,7 @@ function renderString(content,options, includePath){
     return content;
 }
 
-module.exports ={
+module.exports = {
     renderFile: xejs,
-    renderString: renderString     
+    renderString: renderString
 };
