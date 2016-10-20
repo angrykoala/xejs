@@ -1,13 +1,11 @@
 var defaultTags = require('./app/tag_parser').defaultTags;
-var xejsRenderer = require('./app/renderer');
+var xejs = require('./app/renderer');
 
-module.exports = function(file, renderingOptions, args, done) {
+
+function setOptions(renderingOptions, args) {
     var tokens = defaultTags;
     if (renderingOptions.tokens) tokens = tokens.concat(renderingOptions.tokens);
-    if (!done && typeof args === "function") done = args;
-    else if (!done && !args && typeof renderingOptions === "function") done = renderingOptions;
-
-    var options = {
+    return {
         openTagEJS: "<%- ",
         closeTagEJS: "%>",
         tagRegex: /<%/g,
@@ -18,10 +16,24 @@ module.exports = function(file, renderingOptions, args, done) {
         tokens: tokens,
         args: args || {}
     };
+}
+
+//TODO: Avoid repeating code
+function renderFile(file, renderingOptions, args, done) {
+    if (!done && typeof args === "function") {
+        done = args;
+        args = [];
+    } else if (!done && !args && typeof renderingOptions === "function") {
+        done = renderingOptions;
+        renderingOptions = {};
+    }
+
+    var options = setOptions(renderingOptions, args);
+
     var res = null;
     var err = null;
     try {
-        res = xejsRenderer(file, options);
+        res = xejs.renderFile(file, options);
     } catch (e) {
         err = e;
     }
@@ -33,4 +45,38 @@ module.exports = function(file, renderingOptions, args, done) {
             resolve(res);
         }
     });
-};
+}
+
+// TODO: avoid repeating code
+function renderString(content, renderingOptions, args, done) {
+    if (!done && typeof args === "function") {
+        done = args;
+        args = [];
+    } else if (!done && !args && typeof renderingOptions === "function") {
+        done = renderingOptions;
+        renderingOptions = {};
+    }
+
+    var options = setOptions(renderingOptions, args);
+    var includePath=renderingOptions.includePath;
+
+    var res = null;
+    var err = null;
+    try {
+        res = xejs.renderString(content, options, includePath);
+    } catch (e) {
+        err = e;
+    }
+    if (done) return done(err, res);
+    return new Promise(function(resolve, reject) {
+        if (err) {
+            reject(err);
+        } else {
+            resolve(res);
+        }
+    });
+}
+
+module.exports = renderFile;
+module.exports.renderFile = renderFile;
+module.exports.renderString = renderString;

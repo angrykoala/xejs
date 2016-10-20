@@ -81,4 +81,38 @@ describe("Main test", function() {
             done();
         });
     });
+    it("Render from string", function(done) {
+        fs.readFile(__dirname + '/file1.md', 'utf-8', function(err, res) {
+            assert.notOk(err);
+            assert.ok(res);
+            xejs.renderString(res, {
+                includePath: __dirname
+            }, function(err, res) {
+                assert.notOk(err);
+                assert.ok(res);
+                assert.match(res, /Second\sfile\scontent/);
+                assert.match(res, /\{\{\s*message\s*\}\}/);
+                xejs(__dirname + '/file1.md', {}, function(err, res2) {
+                    assert.notOk(err);
+                    assert.ok(res2);
+                    assert.strictEqual(res, res2);
+                    done();
+                });
+            });
+        });
+    });
+    it("Render file method", function(done) {
+        xejs.renderFile(__dirname + '/file1.md', config.options, config.args, function(err, res) {
+            assert.notOk(err);
+            assert.ok(res);
+            var i;
+            for (i = 0; i < regex.match.length; i++) {
+                assert.match(res, regex.match[i]);
+            }
+            for (i = 0; i < regex.notMatch.length; i++) {
+                assert.notMatch(res, regex.notMatch[i]);
+            }
+            done();
+        });
+    });
 });

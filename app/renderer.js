@@ -22,7 +22,7 @@ function parseContent(content, options) {
     return tagParser(content, options.tokens, options);
 }
 
-function setupOptions(filePath, options) {
+function optionsSetup(filePath, options) {
     var rendererOptions = options.args || {};
     rendererOptions.xejs = xejs;
     rendererOptions.parentPath = filePath;
@@ -35,19 +35,23 @@ function xejs(file, options, parentPath) {
     var filePath = getFilePath(file, parentPath);
     var content= loadFile(filePath);
     content = parseContent(content, options);
-    var rendererOptions = setupOptions(filePath, options);
+    var rendererOptions = optionsSetup(filePath, options);
     content = ejsRenderer(content, rendererOptions);
     rendererOptions.parentPath = parentPath;
     return content;
 }
 
-function renderFromString(content,options){
-    var filePath = ".";
-    content = parseContent(content, rendererOptions);
-    var rendererOptions = setupOptions(filePath, options);
+function renderString(content,options, includePath){
+    includePath=includePath || process.cwd();
+    includePath += "/file";
+    content = parseContent(content, options);
+    var rendererOptions = optionsSetup(includePath, options);
     content = ejsRenderer(content, rendererOptions);
-    rendererOptions.parentPath = filePath;
+    rendererOptions.parentPath = includePath;
     return content;
 }
 
-module.exports = xejs;
+module.exports ={
+    renderFile: xejs,
+    renderString: renderString     
+};
