@@ -115,4 +115,11 @@ describe("Main test", function() {
             done();
         });
     });
+    
+    it("Circular dependencies including files", function(done){
+        xejs.renderFile(__dirname + '/file6.md', config.options, config.args, function(err, res) {
+            assert.ok(err);            
+            done();            
+        });        
+    });
 });

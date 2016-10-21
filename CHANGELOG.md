@@ -1,6 +1,7 @@
-0.6.0 / ----------
+0.6.0 / 2016-10-22
 ==================
 
+  * Error thrown if circular dependencies on include are detected
   * Support for rendering from string
   * Node.js updated in CI tests
 

@@ -13,6 +13,11 @@ function getFilePath(file, parentPath) {
     return filePath;
 }
 
+function fileInStack(file,renderedStack){
+    if(renderedStack.indexOf(file)>=0) return true;
+    else return false;
+}
+
 function loadFile(filePath) {
     return fs.readFileSync(filePath, 'utf-8');
 }
@@ -33,11 +38,14 @@ function optionsSetup(filePath, options) {
 //Avoid repeating code
 function xejs(file, options, parentPath) {
     var filePath = getFilePath(file, parentPath);
+    if(fileInStack(filePath, options.renderedStack)) throw new Error("Error: Found circular dependencies while parsing xejs");
+    options.renderedStack.push(filePath);
     var content = loadFile(filePath);
     content = parseContent(content, options);
     var rendererOptions = optionsSetup(filePath, options);
     content = ejsRenderer(content, rendererOptions);
     rendererOptions.parentPath = parentPath;
+    options.renderedStack.pop();
     return content;
 }
 

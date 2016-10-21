@@ -14,7 +14,8 @@ function setOptions(renderingOptions, args) {
         commentTag: renderingOptions.commentTag || "#",
         ejsEscape: renderingOptions.ejsEscape === false ? false : true,
         tokens: tokens,
-        args: args || {}
+        args: args || {},
+        renderedStack: []
     };
 }
 
