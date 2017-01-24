@@ -1,6 +1,6 @@
 {
   "name": "xejs",
-  "version": "1.0.0",
+  "version": "0.7.0",
   "description": "Recursive templating. What could go wrong?",
   "main": "index.js",
   "scripts": {
@@ -17,12 +17,12 @@
   },
   "homepage": "https://github.com/angrykoala/xejs#readme",
   "dependencies": {
-    "ejs": "^2.5.2"
+    "ejs": "^2.5.5"
   },
   "devDependencies": {
     "chai": "^3.5.0",
     "istanbul": "^0.4.5",
-    "mocha": "^3.0.2"
+    "mocha": "^3.2.0"
   },
   "engines": {
     "node": ">= 0.12.15"

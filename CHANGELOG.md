@@ -1,11 +1,12 @@
-1.0.0 / 0000-00-00
+0.7.0 / 0000-00-00
 ==================
 
+    * Dependencies updated (mocha and ejs)
 
 0.6.0 / 2016-10-22
 ==================
 
-  * Error thrown if circular dependencies on include are detected
+  * Error thrown if detected circular dependencies on include
   * Support for rendering from string
   * Node.js updated in CI tests
 
