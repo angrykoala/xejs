@@ -3,6 +3,7 @@
 
     * Dependencies updated (mocha and ejs)
     * Contributing file updated
+    * Added custom tags and custom comments tags test support
 
 0.6.0 / 2016-10-22
 ==================

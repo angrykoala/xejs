@@ -115,11 +115,64 @@ describe("Main test", function() {
             done();
         });
     });
-    
-    it("Circular dependencies including files", function(done){
+
+    it("Circular dependencies including files", function(done) {
         xejs.renderFile(__dirname + '/file6.md', config.options, config.args, function(err, res) {
-            assert.ok(err);            
-            done();            
-        });        
+            assert.ok(err);
+            done();
+        });
+    });
+
+    describe("Custom tags", function() {
+        var options;
+        beforeEach(function() {
+            options = {
+                tokens: config.options.tokens
+            };
+        })
+
+
+        it("Double custom tags", function(done) {
+            options.openTag = "<<";
+            options.closeTag = ">>";
+
+            xejs.renderFile(__dirname + '/custom_tags.md', options, config.args, function(err, res) {
+                assert.notOk(err);
+                assert.ok(res);
+                assert.match(res, /#\sCustom\sTags\s*##\sDouble\sTags\s*Hello\sWorld\s*##\sSecond\sfile/);
+                done();
+            });
+
+        });
+
+        it.skip("Only opening tags", function(done) {
+
+
+        });
+
+        it("Custom comment tags", function(done) {
+            options.commentTag="@";
+            xejs.renderFile(__dirname + '/custom_tags.md', options, config.args, function(err, res) {
+                assert.notOk(err);
+                assert.ok(res);
+                assert.notMatch(res,/\{\{\@[\s\S]*?\}\}/);
+                assert.notMatch(res,/custom\scomment/);
+                assert.match(res,/##\sCustom\sComment\s*<<#\snormal\scomment\s>>/);
+                done();
+            });
+        });
+        it("Comments with custom tags", function(done) {
+            options.openTag = "<<";
+            options.closeTag = ">>";
+
+            xejs.renderFile(__dirname + '/custom_tags.md', options, config.args, function(err, res) {
+                assert.notOk(err);
+                assert.ok(res);
+                assert.notMatch(res,/\<<#[\s\S]*?>>/);
+                assert.notMatch(res,/normal\scomment/);
+                assert.match(res,/##\sCustom\sComment\s*\{\{\@\scustom\scomment\s\}\}/);
+                done();
+            });
+        });
     });
 });
