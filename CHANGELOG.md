@@ -2,6 +2,7 @@
 ==================
 
     * Dependencies updated (mocha and ejs)
+    * Contributing file updated
 
 0.6.0 / 2016-10-22
 ==================
