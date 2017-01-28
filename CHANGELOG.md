@@ -4,6 +4,8 @@
     * Dependencies updated (mocha and ejs)
     * Contributing file updated
     * Added custom tags and custom comments tags test support
+    * Syntax updated to latest ES
+    * Added jshint
 
 0.6.0 / 2016-10-22
 ==================

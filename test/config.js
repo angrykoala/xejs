@@ -1,6 +1,8 @@
+"use strict";
+
 function loop(data, times) {
-    var res = "";
-    for (var i = 0; i < times; i++) {
+    let res = "";
+    for (let i = 0; i < times; i++) {
         res += data + "\n";
     }
     return res;

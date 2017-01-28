@@ -1,24 +1,25 @@
+"use strict";
 // Tag manipulation
 
-var defaultTokens = [
+const defaultTokens = [
     [/include\s+(\S+)/i, "xejs(\"$1\",options,parentPath)"]
 ];
 
 
 function stripComments(content, options) {
-    var commentOptions = {
+    const commentOptions = {
         openTag: options.openTag + options.commentTag,
         closeTag: options.closeTag
     };
-    var commentRegex = generateTagRegex(/[\s\S]*/i, commentOptions);
+    const commentRegex = generateTagRegex(/[\s\S]*/i, commentOptions);
     content = content.replace(commentRegex, "");
     return content;
 }
 
 function generateTagRegex(token, options) {
-    var modifier = "g";
+    let modifier = "g";
     if (token.ignoreCase) modifier += "i";
-    var tokenString = token.source;
+    let tokenString = token.source;
     tokenString = tokenString.replace(/\\s/g, "\ ");
     tokenString = "\\ *?" + tokenString + "?\\ *?";
 
@@ -26,15 +27,14 @@ function generateTagRegex(token, options) {
 }
 
 function escapeToken(input) {
-    var res = input.replace(/(["'<%>=-])/g, "\\$1");
-    return res;
+    return input.replace(/(["'<%>=-])/g, "\\$1");
 }
 
 function replaceTags(content, tokens, options) {
     function replaceCallback() {
-        var result = options.openTagEJS + command + options.closeTagEJS;
-        for (var i = 1; i < arguments.length - 2; i++) {
-            var elem = escapeToken(arguments[i]);
+        let result = options.openTagEJS + command + options.closeTagEJS;
+        for (let i = 1; i < arguments.length - 2; i++) {
+            let elem = escapeToken(arguments[i]);
             result = result.replace("$" + i, elem);
         }
         return result;
@@ -43,8 +43,8 @@ function replaceTags(content, tokens, options) {
 
     content = stripComments(content, options);
 
-    for (var i = 0; i < tokens.length; i++) {
-        var reg = generateTagRegex(tokens[i][0], options);
+    for (let i = 0; i < tokens.length; i++) {
+        const reg = generateTagRegex(tokens[i][0], options);
         var command = tokens[i][1];
         content = content.replace(reg, replaceCallback);
     }
