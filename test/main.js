@@ -1,23 +1,24 @@
-var fs = require('fs');
-var assert = require('chai').assert;
+"use strict";
 
-var xejs = require('../index.js');
+const fs = require('fs');
+const assert = require('chai').assert;
 
-var config = require('./config');
+const xejs = require('../index.js');
+
+const config = require('./config');
 
 describe("Main test", function() {
     this.timeout(5000);
-    var regex = config.regex;
+    const regex = config.regex;
     it("Example file", function(done) {
         assert.ok(xejs);
         xejs(__dirname + '/file1.md', config.options, config.args, function(err, res) {
             assert.notOk(err);
             assert.ok(res);
-            var i;
-            for (i = 0; i < regex.match.length; i++) {
+            for (let i = 0; i < regex.match.length; i++) {
                 assert.match(res, regex.match[i]);
             }
-            for (i = 0; i < regex.notMatch.length; i++) {
+            for (let i = 0; i < regex.notMatch.length; i++) {
                 assert.notMatch(res, regex.notMatch[i]);
             }
             done();
@@ -41,7 +42,7 @@ describe("Main test", function() {
 
     it("No ejs escape option", function(done) {
         assert.ok(xejs);
-        var options = config.options;
+        const options = config.options;
         options.ejsEscape = false;
         xejs(__dirname + '/file3.md', options, config.args, function(err, res) {
             assert.notOk(err);
@@ -105,21 +106,73 @@ describe("Main test", function() {
         xejs.renderFile(__dirname + '/file1.md', config.options, config.args, function(err, res) {
             assert.notOk(err);
             assert.ok(res);
-            var i;
-            for (i = 0; i < regex.match.length; i++) {
+            for (let i = 0; i < regex.match.length; i++) {
                 assert.match(res, regex.match[i]);
             }
-            for (i = 0; i < regex.notMatch.length; i++) {
+            for (let i = 0; i < regex.notMatch.length; i++) {
                 assert.notMatch(res, regex.notMatch[i]);
             }
             done();
         });
     });
-    
-    it("Circular dependencies including files", function(done){
-        xejs.renderFile(__dirname + '/file6.md', config.options, config.args, function(err, res) {
-            assert.ok(err);            
-            done();            
-        });        
+
+    it("Circular dependencies including files", function(done) {
+        xejs.renderFile(__dirname + '/file6.md', config.options, config.args, function(err) {
+            assert.ok(err);
+            done();
+        });
+    });
+
+    describe("Custom tags", function() {
+        let options;
+        beforeEach(function() {
+            options = {
+                tokens: config.options.tokens
+            };
+        });
+
+
+        it("Double custom tags", function(done) {
+            options.openTag = "<<";
+            options.closeTag = ">>";
+
+            xejs.renderFile(__dirname + '/custom_tags.md', options, config.args, function(err, res) {
+                assert.notOk(err);
+                assert.ok(res);
+                assert.match(res, /#\sCustom\sTags\s*##\sDouble\sTags\s*Hello\sWorld\s*##\sSecond\sfile/);
+                done();
+            });
+
+        });
+
+        it.skip("Only opening tags", function() {
+            throw new Error("Not implemented");
+
+        });
+
+        it("Custom comment tags", function(done) {
+            options.commentTag="@";
+            xejs.renderFile(__dirname + '/custom_tags.md', options, config.args, function(err, res) {
+                assert.notOk(err);
+                assert.ok(res);
+                assert.notMatch(res,/\{\{\@[\s\S]*?\}\}/);
+                assert.notMatch(res,/custom\scomment/);
+                assert.match(res,/##\sCustom\sComment\s*<<#\snormal\scomment\s>>/);
+                done();
+            });
+        });
+        it("Comments with custom tags", function(done) {
+            options.openTag = "<<";
+            options.closeTag = ">>";
+
+            xejs.renderFile(__dirname + '/custom_tags.md', options, config.args, function(err, res) {
+                assert.notOk(err);
+                assert.ok(res);
+                assert.notMatch(res,/<<#[\s\S]*?>>/);
+                assert.notMatch(res,/normal\scomment/);
+                assert.match(res,/##\sCustom\sComment\s*\{\{\@\scustom\scomment\s\}\}/);
+                done();
+            });
+        });
     });
 });

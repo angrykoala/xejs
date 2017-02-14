@@ -1,14 +1,16 @@
-var ejs = require('ejs');
-var fs = require('fs');
-var path = require('path');
+"use strict";
 
-var ejsRenderer = ejs.render;
+const ejs = require('ejs');
+const fs = require('fs');
+const path = require('path');
 
-var tagParser = require('./tag_parser');
+const tagParser = require('./tag_parser');
+
+const ejsRenderer = ejs.render;
 
 
 function getFilePath(file, parentPath) {
-    var filePath = file;
+    let filePath = file;
     if (parentPath) filePath = path.join(parentPath, "../", file);
     return filePath;
 }
@@ -28,7 +30,7 @@ function parseContent(content, options) {
 }
 
 function optionsSetup(filePath, options) {
-    var rendererOptions = options.args || {};
+    const rendererOptions = options.args || {};
     rendererOptions.xejs = xejs;
     rendererOptions.parentPath = filePath;
     rendererOptions.options = options;
@@ -37,12 +39,12 @@ function optionsSetup(filePath, options) {
 
 //Avoid repeating code
 function xejs(file, options, parentPath) {
-    var filePath = getFilePath(file, parentPath);
+    const filePath = getFilePath(file, parentPath);
     if(fileInStack(filePath, options.renderedStack)) throw new Error("Error: Found circular dependencies while parsing xejs");
     options.renderedStack.push(filePath);
-    var content = loadFile(filePath);
+    let content = loadFile(filePath);
     content = parseContent(content, options);
-    var rendererOptions = optionsSetup(filePath, options);
+    const rendererOptions = optionsSetup(filePath, options);
     content = ejsRenderer(content, rendererOptions);
     rendererOptions.parentPath = parentPath;
     options.renderedStack.pop();
@@ -54,7 +56,7 @@ function renderString(content, options, includePath) {
     includePath = includePath || process.cwd();
     includePath += "/file";
     content = parseContent(content, options);
-    var rendererOptions = optionsSetup(includePath, options);
+    const rendererOptions = optionsSetup(includePath, options);
     content = ejsRenderer(content, rendererOptions);
     rendererOptions.parentPath = includePath;
     return content;

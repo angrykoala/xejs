@@ -1,10 +1,11 @@
-var defaultTags = require('./app/tag_parser').defaultTags;
-var xejs = require('./app/renderer');
+"use strict";
+
+let defaultTags = require('./app/tag_parser').defaultTags;
+const xejs = require('./app/renderer');
 
 
 function setOptions(renderingOptions, args) {
-    var tokens = defaultTags;
-    if (renderingOptions.tokens) tokens = tokens.concat(renderingOptions.tokens);
+    const tokens = getTokens(renderingOptions.tokens);
     return {
         openTagEJS: "<%- ",
         closeTagEJS: "%>",
@@ -19,6 +20,12 @@ function setOptions(renderingOptions, args) {
     };
 }
 
+function getTokens(tokens){
+    let res=defaultTags;
+    if (tokens) res = res.concat(tokens);
+    return res;
+}
+
 //TODO: Avoid repeating code
 function renderFile(file, renderingOptions, args, done) {
     if (!done && typeof args === "function") {
@@ -29,10 +36,10 @@ function renderFile(file, renderingOptions, args, done) {
         renderingOptions = {};
     }
 
-    var options = setOptions(renderingOptions, args);
+    const options = setOptions(renderingOptions, args);
 
-    var res = null;
-    var err = null;
+    let res = null;
+    let err = null;
     try {
         res = xejs.renderFile(file, options);
     } catch (e) {
@@ -58,11 +65,11 @@ function renderString(content, renderingOptions, args, done) {
         renderingOptions = {};
     }
 
-    var options = setOptions(renderingOptions, args);
-    var includePath=renderingOptions.includePath;
+    const options = setOptions(renderingOptions, args);
+    const includePath=renderingOptions.includePath;
 
-    var res = null;
-    var err = null;
+    let res = null;
+    let err = null;
     try {
         res = xejs.renderString(content, options, includePath);
     } catch (e) {

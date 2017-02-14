@@ -1,7 +1,16 @@
+0.6.1 / 2017-02-14
+==================
+
+    * Dependencies updated (mocha and ejs)
+    * Contributing file updated
+    * Added custom tags and custom comments tags test support
+    * Syntax updated to latest ES
+    * Added jshint to tests
+
 0.6.0 / 2016-10-22
 ==================
 
-  * Error thrown if circular dependencies on include are detected
+  * Error thrown if detected circular dependencies on include
   * Support for rendering from string
   * Node.js updated in CI tests
 
