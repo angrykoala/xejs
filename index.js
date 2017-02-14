@@ -1,12 +1,11 @@
 "use strict";
 
-const defaultTags = require('./app/tag_parser').defaultTags;
+let defaultTags = require('./app/tag_parser').defaultTags;
 const xejs = require('./app/renderer');
 
 
 function setOptions(renderingOptions, args) {
-    let tokens = defaultTags;
-    if (renderingOptions.tokens) tokens = tokens.concat(renderingOptions.tokens);
+    const tokens = getTokens(renderingOptions.tokens);
     return {
         openTagEJS: "<%- ",
         closeTagEJS: "%>",
@@ -19,6 +18,12 @@ function setOptions(renderingOptions, args) {
         args: args || {},
         renderedStack: []
     };
+}
+
+function getTokens(tokens){
+    let res=defaultTags;
+    if (tokens) res = res.concat(tokens);
+    return res;
 }
 
 //TODO: Avoid repeating code

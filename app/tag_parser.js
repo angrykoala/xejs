@@ -45,7 +45,8 @@ function replaceTags(content, tokens, options) {
 
     for (let i = 0; i < tokens.length; i++) {
         const reg = generateTagRegex(tokens[i][0], options);
-        var command = tokens[i][1];
+        //var required for scope purposes
+        var command = tokens[i][1]; // jshint ignore:line
         content = content.replace(reg, replaceCallback);
     }
     return content;

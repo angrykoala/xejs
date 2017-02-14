@@ -1,11 +1,11 @@
-0.7.0 / 0000-00-00
+0.6.1 / 2017-02-14
 ==================
 
     * Dependencies updated (mocha and ejs)
     * Contributing file updated
     * Added custom tags and custom comments tags test support
     * Syntax updated to latest ES
-    * Added jshint
+    * Added jshint to tests
 
 0.6.0 / 2016-10-22
 ==================

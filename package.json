@@ -1,10 +1,11 @@
 {
   "name": "xejs",
-  "version": "0.7.0",
+  "version": "0.6.1",
   "description": "Recursive templating. What could go wrong?",
   "main": "index.js",
   "scripts": {
-    "test": "istanbul cover _mocha"
+    "test": "istanbul cover _mocha && npm run jshint",
+    "jshint": "jshint index.js app/*.js test/*.js"
   },
   "repository": {
     "type": "git",
@@ -22,6 +23,7 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "istanbul": "^0.4.5",
+    "jshint": "^2.9.4",
     "mocha": "^3.2.0"
   },
   "engines": {
