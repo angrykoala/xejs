@@ -145,7 +145,6 @@ describe("Main test", function() {
             };
         });
 
-
         it("Double custom tags", function(done) {
             options.openTag = "<<";
             options.closeTag = ">>";

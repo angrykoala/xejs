@@ -8,7 +8,6 @@ const tagParser = require('./tag_parser');
 
 const ejsRenderer = ejs.render;
 
-
 function getFilePath(file, parentPath) {
     let filePath = file;
     if (parentPath) filePath = path.join(parentPath, "../", file);
@@ -54,7 +53,7 @@ class Renderer {
     optionsSetup(filePath) {
         const options = this.options;
         const rendererOptions = options.args || {};
-        rendererOptions.xejs = this.render.bind(this);
+        rendererOptions.xejs = this.render.bind(this); //Recursive function to be used by EJS
         rendererOptions.parentPath = filePath;
         rendererOptions.options = options;
         return rendererOptions;
@@ -65,7 +64,6 @@ class Renderer {
     }
 
     parseContent(content) {
-        if (this.options.ejsEscape !== false) content = content.replace(this.options.tagRegex, "<%%"); //this should go to tagRenderer!!
         return tagParser(content, this.tokens, this.options);
     }
 

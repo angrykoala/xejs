@@ -7,10 +7,13 @@ const defaultTokens = [
 
 class TagParser {
     constructor(options, tokens) {
-        this.openTagEJS = options.openTagEJS || "<%- ";
-        this.closeTagEJS = options.closeTagEJS || "%>";
+        this.tagRegex = /<%/g;
+        this.openTagEJS = "<%- ";
+        this.closeTagEJS = "%>";
+
         this.openTag = options.openTag || "{{";
         this.closeTag = options.closeTag || "}}";
+        this.ejsEscape = options.ejsEscape === false ? false : true;
 
 
         const commentTag = options.commentTag || "#";
@@ -31,11 +34,17 @@ class TagParser {
 
     //Replace tags of content
     replaceTags(content) {
+        content = this.escapeEJS(content);
         content = this.stripComments(content);
 
         for (let t of this.tokens) {
             content = content.replace(t[0], this.replaceCallback.bind(this, t[1]));
         }
+        return content;
+    }
+
+    escapeEJS(content) {
+        if (this.ejsEscape) content = content.replace(this.tagRegex, "<%%");
         return content;
     }
 
@@ -69,7 +78,7 @@ class TagParser {
     compileCommentTag(commentTag) {
         const token = /[\s\S]*/i;
         const openTag = this.openTag + commentTag;
-        this.commentRegex=generateTagRegex(token, openTag, this.closeTag);
+        this.commentRegex = generateTagRegex(token, openTag, this.closeTag);
     }
 
     escapeToken(input) {
