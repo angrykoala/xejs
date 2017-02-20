@@ -2,7 +2,7 @@
 
 //Default tokens to be rendered everytime
 const defaultTokens = [
-    [/include\s+(\S+)/i, "xejs(\"$1\",options,parentPath)"]
+    [/include\s+(\S+)/i, "xejs(\"$1\",parentPath)"]
 ];
 
 class TagParser {
@@ -33,7 +33,7 @@ class TagParser {
     }
 
     //Replace tags of content
-    replaceTags(content) {
+    execute(content) {
         content = this.escapeEJS(content);
         content = this.stripComments(content);
 
@@ -99,16 +99,6 @@ function generateTagRegex(token, openTag, closeTag) {
     return new RegExp(openTag + tokenString + closeTag, modifier);
 }
 
+TagParser.defaultTags = defaultTokens;
 
-
-
-//Temporal entry function
-function parseTag(content, tokens, options) {
-    const parser = new TagParser(options, tokens);
-    const res = parser.replaceTags(content);
-    return res;
-}
-
-parseTag.defaultTags = defaultTokens;
-
-module.exports = parseTag;
+module.exports = TagParser;

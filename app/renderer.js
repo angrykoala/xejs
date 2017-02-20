@@ -4,7 +4,7 @@ const ejs = require('ejs');
 const fs = require('fs');
 const path = require('path');
 
-const tagParser = require('./tag_parser');
+const TagParser = require('./tag_parser');
 
 const ejsRenderer = ejs.render;
 
@@ -16,16 +16,13 @@ function getFilePath(file, parentPath) {
 
 
 class Renderer {
-
-    constructor(options) {
-
-        this.tokens = options.tokens;
+    constructor(tagParser, args) {
+        this.parser = tagParser;
+        this.args = args;
         this.renderedStack = [];
-
-        this.options = options; //remove in the futuuure
     }
 
-    render(file, x, parentPath) {
+    render(file, parentPath) {
         const filePath = getFilePath(file, parentPath);
         if (this.fileInStack(filePath)) throw new Error("Error: Found circular dependencies while parsing xejs");
         this.renderedStack.push(filePath);
@@ -39,7 +36,7 @@ class Renderer {
     }
 
     //Avoid repeating code
-    renderString(content,x, includePath) {
+    renderString(content, includePath) {
         includePath = includePath || process.cwd();
         includePath += "/file";
         content = this.parseContent(content);
@@ -51,11 +48,9 @@ class Renderer {
 
 
     optionsSetup(filePath) {
-        const options = this.options;
-        const rendererOptions = options.args || {};
+        const rendererOptions = this.args || {};
         rendererOptions.xejs = this.render.bind(this); //Recursive function to be used by EJS
         rendererOptions.parentPath = filePath;
-        rendererOptions.options = options;
         return rendererOptions;
     }
 
@@ -64,7 +59,7 @@ class Renderer {
     }
 
     parseContent(content) {
-        return tagParser(content, this.tokens, this.options);
+        return this.parser.execute(content);
     }
 
     fileInStack(file) {
@@ -76,12 +71,14 @@ class Renderer {
 
 module.exports = {
     renderFile: function(files, options, parentPath) {
-        const renderer = new Renderer(options);
-        return renderer.render(files, null, parentPath);
+        const parser = new TagParser(options, options.tokens);
+        const renderer = new Renderer(parser,options.args);
+        return renderer.render(files, parentPath);
 
     },
     renderString: function(content, options, includePath) {
-        const renderer = new Renderer(options);
-        return renderer.renderString(content, null, includePath);
+        const parser = new TagParser(options, options.tokens);
+        const renderer = new Renderer(parser,options.args);
+        return renderer.renderString(content, includePath);
     }
 };
