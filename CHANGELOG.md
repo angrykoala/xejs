@@ -7,6 +7,7 @@
   * Internal API Changed (external API unchanged)
   * Test "Case insensitive tokens" added
   * Travis node versions updated to cover main supported versions
+  * EJS updated from 2.5.5 to 2.5.6
 
 0.6.1 / 2017-02-14
 ==================
