@@ -3,7 +3,7 @@
 const fs = require('fs');
 const assert = require('chai').assert;
 
-const xejs = require('../index.js');
+const xejs = require('../main.js');
 
 const config = require('./config');
 

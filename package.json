@@ -2,10 +2,10 @@
   "name": "xejs",
   "version": "0.6.2",
   "description": "Recursive templating. What could go wrong?",
-  "main": "index.js",
+  "main": "main.js",
   "scripts": {
     "test": "istanbul cover _mocha && npm run jshint",
-    "jshint": "jshint index.js app/*.js test/*.js"
+    "jshint": "jshint main.js app/*.js test/*.js"
   },
   "repository": {
     "type": "git",

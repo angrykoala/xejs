@@ -3,6 +3,7 @@
 
   * Interal refactor on TagParser and Renderer (now classes instead of functions)
   * Main file code refactor
+  * Main file renamed from index.js to main.js
   * Internal API Changed (external API unchanged)
   * Test "Case insensitive tokens" added
   * Travis node versions updated to cover main supported versions
