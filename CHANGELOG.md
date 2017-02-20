@@ -1,4 +1,4 @@
-0.6.2 / ####-##-##
+0.6.2 / 2016-02-20
 ==================
 
   * Interal refactor on TagParser and Renderer (now classes instead of functions)
@@ -7,7 +7,6 @@
   * Internal API Changed (external API unchanged)
   * Test "Case insensitive tokens" added
   * Travis node versions updated to cover main supported versions
-
 
 0.6.1 / 2017-02-14
 ==================
