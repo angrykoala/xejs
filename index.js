@@ -1,62 +1,27 @@
 "use strict";
 
-let defaultTags = require('./app/tag_parser').defaultTags;
-const xejs = require('./app/renderer');
+const TagParser = require('./app/tag_parser');
+const Renderer = require('./app/renderer');
 
+const defaultTags = TagParser.defaultTags;
 
-function setOptions(renderingOptions, args) {
-    const tokens = getTokens(renderingOptions.tokens);
-    return {
-        openTagEJS: "<%- ",
-        closeTagEJS: "%>",
-        tagRegex: /<%/g,
-        openTag: renderingOptions.openTag || "{{",
-        closeTag: renderingOptions.closeTag || "}}",
-        commentTag: renderingOptions.commentTag || "#",
-        ejsEscape: renderingOptions.ejsEscape === false ? false : true,
-        tokens: tokens,
-        args: args || {},
-        renderedStack: []
-    };
-}
-
-function getTokens(tokens){
-    let res=defaultTags;
+function getTokens(tokens) {
+    let res = defaultTags;
     if (tokens) res = res.concat(tokens);
     return res;
 }
 
-//TODO: Avoid repeating code
+
 function renderFile(file, renderingOptions, args, done) {
-    if (!done && typeof args === "function") {
-        done = args;
-        args = [];
-    } else if (!done && !args && typeof renderingOptions === "function") {
-        done = renderingOptions;
-        renderingOptions = {};
-    }
-
-    const options = setOptions(renderingOptions, args);
-
-    let res = null;
-    let err = null;
-    try {
-        res = xejs.renderFile(file, options);
-    } catch (e) {
-        err = e;
-    }
-    if (done) return done(err, res);
-    return new Promise(function(resolve, reject) {
-        if (err) {
-            reject(err);
-        } else {
-            resolve(res);
-        }
-    });
+    return render(file, renderingOptions, args, done, false);
 }
 
-// TODO: avoid repeating code
 function renderString(content, renderingOptions, args, done) {
+    return render(content, renderingOptions, args, done, true);
+}
+
+function render(file, renderingOptions, args, done, renderString) {
+    //Extract this
     if (!done && typeof args === "function") {
         done = args;
         args = [];
@@ -64,14 +29,21 @@ function renderString(content, renderingOptions, args, done) {
         done = renderingOptions;
         renderingOptions = {};
     }
+    //####
 
-    const options = setOptions(renderingOptions, args);
-    const includePath=renderingOptions.includePath;
+    const tokens = getTokens(renderingOptions.tokens);
 
     let res = null;
     let err = null;
     try {
-        res = xejs.renderString(content, options, includePath);
+        const parser = new TagParser(renderingOptions, tokens);
+        const renderer = new Renderer(parser, args);
+        if (renderString) {
+            const includePath = renderingOptions.includePath;
+            res = renderer.renderString(file, includePath); //file is content here
+        } else {
+            res = renderer.render(file);
+        }
     } catch (e) {
         err = e;
     }
@@ -84,6 +56,8 @@ function renderString(content, renderingOptions, args, done) {
         }
     });
 }
+
+
 
 module.exports = renderFile;
 module.exports.renderFile = renderFile;

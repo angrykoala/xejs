@@ -1,7 +1,9 @@
 0.6.2 / ####-##-##
 ==================
 
-  * Interal Refactor on TagParser and Renderer (now classes instead of functions). API unchanged
+  * Interal refactor on TagParser and Renderer (now classes instead of functions)
+  * Main file code refactor
+  * Internal API Changed (external API unchanged)
   * Test "Case insensitive tokens" added
   * Travis node versions updated to cover main supported versions
 

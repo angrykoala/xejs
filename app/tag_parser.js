@@ -18,7 +18,6 @@ class TagParser {
 
         const commentTag = options.commentTag || "#";
         this.compileCommentTag(commentTag);
-
         this.setTokens(tokens);
     }
 
