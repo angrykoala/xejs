@@ -1,4 +1,8 @@
-0.6.2 / 2016-02-20
+0.6.3 / ####-##-##
+==================
+
+
+0.6.2 / 2017-02-20
 ==================
 
   * Interal refactor on TagParser and Renderer (now classes instead of functions)
