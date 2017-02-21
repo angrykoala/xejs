@@ -1,64 +1,36 @@
 "use strict";
 
-const TagParser = require('./app/tag_parser');
+const Parser = require('./app/parser');
 const Renderer = require('./app/renderer');
 
-const defaultTags = TagParser.defaultTags;
 
-function getTokens(tokens) {
-    let res = defaultTags;
-    if (tokens) res = res.concat(tokens);
-    return res;
-}
+module.exports = class xejs {
+    constructor(options) {
+        options = options || {};
 
-
-function renderFile(file, renderingOptions, args, done) {
-    return render(file, renderingOptions, args, done, false);
-}
-
-function renderString(content, renderingOptions, args, done) {
-    return render(content, renderingOptions, args, done, true);
-}
-
-function render(file, renderingOptions, args, done, renderString) {
-    //Extract this
-    if (!done && typeof args === "function") {
-        done = args;
-        args = [];
-    } else if (!done && !args && typeof renderingOptions === "function") {
-        done = renderingOptions;
-        renderingOptions = {};
+        const parser = new Parser(options.options, options.tokens);
+        this.renderer = new Renderer(parser, options.args);
     }
-    //####
 
-    const tokens = getTokens(renderingOptions.tokens);
-
-    let res = null;
-    let err = null;
-    try {
-        const parser = new TagParser(renderingOptions, tokens);
-        const renderer = new Renderer(parser, args);
-        if (renderString) {
-            const includePath = renderingOptions.includePath;
-            res = renderer.renderString(file, includePath); //file is content here
-        } else {
-            res = renderer.render(file);
-        }
-    } catch (e) {
-        err = e;
+    render(file, done) {
+        return this.renderFile(file, done);
     }
-    if (done) return done(err, res);
-    return new Promise(function(resolve, reject) {
-        if (err) {
-            reject(err);
-        } else {
-            resolve(res);
+    renderFile(file, done) {
+        const res=this.renderer.render(file); //TODO: return promise
+        if(done) done(null,res);
+    }
+    renderString(file,includePath, done) {
+        if(!includePath && !done && typeof includePath==='function'){
+            done=includePath;
         }
-    });
-}
+        const res=this.renderer.renderString(file,this.includePath); //TODO: return promise
+        if(done) done(null,res);
+    }
 
+};
 
-
-module.exports = renderFile;
-module.exports.renderFile = renderFile;
-module.exports.renderString = renderString;
+/*module.exports = {
+    renderer: Renderer,
+    parser: TagParser,
+    defaultTags: defaultTags,
+};*/

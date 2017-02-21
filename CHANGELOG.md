@@ -1,15 +1,18 @@
-0.6.3 / ####-##-##
+0.7.0 / ####-##-##
 ==================
 
+  * Changes in external API, now using a class instead of function.
+  * Internal refactor on main file
 
 0.6.2 / 2017-02-20
 ==================
 
-  * Interal refactor on TagParser and Renderer (now classes instead of functions)
+  * Internal refactor on TagParser and Renderer (now classes instead of functions)
   * Main file code refactor
-  * Main file renamed from index.js to main.js
   * Internal API Changed (external API unchanged)
+  * Main file renamed from index.js to main.js
   * Test "Case insensitive tokens" added
+  * Removed unnecessary redundant code flows resulting in an improved test coverage
   * Travis node versions updated to cover main supported versions
   * EJS updated from 2.5.5 to 2.5.6
 
