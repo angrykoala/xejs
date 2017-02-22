@@ -4,8 +4,8 @@ os:
     - windows
 node_js:
     - "stable"
-    - "6.9.1"
-    - "4.6.1"
+    - "6.9.5"
+    - "4.0.0"
 sudo: false    
 script:
     - npm test

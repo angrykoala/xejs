@@ -3,7 +3,7 @@
 const fs = require('fs');
 const assert = require('chai').assert;
 
-const xejs = require('../index.js');
+const xejs = require('../main.js');
 
 const config = require('./config');
 
@@ -65,7 +65,7 @@ describe("Main test", function() {
             assert.notOk(err);
             assert.ok(res);
             assert.match(res, /#\sComment\stags\s+#\sNot\scomment\stags/);
-            assert.match(res, /#\sNot\scomment\stags\s+{{\s#\snot\scomment\stag}}\s*{{#\sMultiline\s+not\ssupported}}/);
+            assert.match(res, /#\sNot\scomment\stags\s+\{\{\s#\snot\scomment\stag\}\}\s*\{\{#\sMultiline\s+not\ssupported\}\}/);
             done();
         });
     });
@@ -123,6 +123,20 @@ describe("Main test", function() {
         });
     });
 
+    it("Case insensitive tokens", function(done) {
+        xejs.renderFile(__dirname + '/case_sensitive.md', {
+            tokens: [
+                [/Message/, "msg"],
+                [/iMessage/i, "msg"]
+            ]
+        }, config.args, function(err, res) {
+            assert.notOk(err);
+            assert.match(res, /##\sCase\sSensitive\s*Hello\sWorld\s*\{\{message\}\}\s*\{\{MESSAGE\}\}\s*\{\{MeSSage\}\}/);
+            assert.match(res, /##\sCase\sInsensitive(\s*Hello\sWorld\s*){4}/);
+            done();
+        });
+    });
+
     describe("Custom tags", function() {
         let options;
         beforeEach(function() {
@@ -130,7 +144,6 @@ describe("Main test", function() {
                 tokens: config.options.tokens
             };
         });
-
 
         it("Double custom tags", function(done) {
             options.openTag = "<<";
@@ -151,13 +164,13 @@ describe("Main test", function() {
         });
 
         it("Custom comment tags", function(done) {
-            options.commentTag="@";
+            options.commentTag = "@";
             xejs.renderFile(__dirname + '/custom_tags.md', options, config.args, function(err, res) {
                 assert.notOk(err);
                 assert.ok(res);
-                assert.notMatch(res,/\{\{\@[\s\S]*?\}\}/);
-                assert.notMatch(res,/custom\scomment/);
-                assert.match(res,/##\sCustom\sComment\s*<<#\snormal\scomment\s>>/);
+                assert.notMatch(res, /\{\{\@[\s\S]*?\}\}/);
+                assert.notMatch(res, /custom\scomment/);
+                assert.match(res, /##\sCustom\sComment\s*<<#\snormal\scomment\s>>/);
                 done();
             });
         });
@@ -168,9 +181,9 @@ describe("Main test", function() {
             xejs.renderFile(__dirname + '/custom_tags.md', options, config.args, function(err, res) {
                 assert.notOk(err);
                 assert.ok(res);
-                assert.notMatch(res,/<<#[\s\S]*?>>/);
-                assert.notMatch(res,/normal\scomment/);
-                assert.match(res,/##\sCustom\sComment\s*\{\{\@\scustom\scomment\s\}\}/);
+                assert.notMatch(res, /<<#[\s\S]*?>>/);
+                assert.notMatch(res, /normal\scomment/);
+                assert.match(res, /##\sCustom\sComment\s*\{\{\@\scustom\scomment\s\}\}/);
                 done();
             });
         });

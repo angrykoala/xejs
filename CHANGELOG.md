@@ -1,11 +1,22 @@
+0.6.2 / 2016-02-20
+==================
+
+  * Interal refactor on TagParser and Renderer (now classes instead of functions)
+  * Main file code refactor
+  * Main file renamed from index.js to main.js
+  * Internal API Changed (external API unchanged)
+  * Test "Case insensitive tokens" added
+  * Travis node versions updated to cover main supported versions
+  * EJS updated from 2.5.5 to 2.5.6
+
 0.6.1 / 2017-02-14
 ==================
 
-    * Dependencies updated (mocha and ejs)
-    * Contributing file updated
-    * Added custom tags and custom comments tags test support
-    * Syntax updated to latest ES
-    * Added jshint to tests
+  * Dependencies updated (mocha and ejs)
+  * Contributing file updated
+  * Added custom tags and custom comments tags test support
+  * Syntax updated to latest ES
+  * Added jshint to tests
 
 0.6.0 / 2016-10-22
 ==================
