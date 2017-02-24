@@ -3,6 +3,7 @@
 
   * Changes in external API, now using a class instead of function.
   * Internal refactor on main file
+  * Tests updated for new API
 
 0.6.2 / 2017-02-20
 ==================
@@ -12,16 +13,16 @@
   * Internal API Changed (external API unchanged)
   * Main file renamed from index.js to main.js
   * Test "Case insensitive tokens" added
-  * Removed unnecessary redundant code flows resulting in an improved test coverage
+  * Removed unnecessary redundant code flows resulting in a better test coverage
   * Travis node versions updated to cover main supported versions
   * EJS updated from 2.5.5 to 2.5.6
 
 0.6.1 / 2017-02-14
 ==================
 
-  * Dependencies updated (mocha and ejs)
+  * Dev dependencies updated (mocha and ejs)
   * Contributing file updated
-  * Added custom tags and custom comments tags test support
+  * Added custom tags and custom comments tags test
   * Syntax updated to latest ES
   * Added jshint to tests
 

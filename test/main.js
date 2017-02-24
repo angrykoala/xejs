@@ -10,11 +10,20 @@ const config = require('./config');
 describe("Main test", function() {
     this.timeout(5000);
     const regex = config.regex;
-    it("Example file", function(done) {
+    let defaultRenderer;
+    beforeEach(() => {
+        defaultRenderer = new xejs({
+            tokens: config.tokens,
+            args: config.args
+        });
+    });
+
+    it("Example file", (done) => {
         assert.ok(xejs);
-        xejs(__dirname + '/file1.md', config.options, config.args, function(err, res) {
+        defaultRenderer.render(config.fileDir + '/file1.md', (err, res) => {
             assert.notOk(err);
             assert.ok(res);
+
             for (let i = 0; i < regex.match.length; i++) {
                 assert.match(res, regex.match[i]);
             }
@@ -25,14 +34,19 @@ describe("Main test", function() {
         });
     });
 
-    it("No arguments provided", function(done) {
-        xejs(__dirname + '/file1.md', function(err, res) {
+    it("No arguments provided", (done) => {
+        const renderer = new xejs();
+        const renderer2 = new xejs({});
+
+        renderer.render(config.fileDir + '/file1.md', (err, res) => {
             assert.notOk(err);
             assert.ok(res);
-            xejs(__dirname + '/file1.md', {}, function(err, res2) {
+
+            renderer2.render(config.fileDir + '/file1.md', (err, res2) => {
                 assert.notOk(err);
                 assert.ok(res2);
                 assert.strictEqual(res, res2);
+
                 assert.match(res, /Second\sfile\scontent/);
                 assert.match(res, /\{\{\s*message\s*\}\}/);
                 done();
@@ -184,6 +198,19 @@ describe("Main test", function() {
                 assert.notMatch(res, /<<#[\s\S]*?>>/);
                 assert.notMatch(res, /normal\scomment/);
                 assert.match(res, /##\sCustom\sComment\s*\{\{\@\scustom\scomment\s\}\}/);
+                done();
+            });
+        });
+    });
+
+    it("Render file method", (done) => {
+        defaultRenderer.render(config.fileDir + '/file1.md', (err, res) => {
+            assert.notOk(err);
+            assert.ok(res);
+            defaultRenderer.renderFile(config.fileDir + '/file1.md', (err2, res2) => {
+                assert.notOk(err2);
+                assert.ok(res2);
+                assert.strictEqual(res, res2);
                 done();
             });
         });
