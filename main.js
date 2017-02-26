@@ -4,6 +4,24 @@ const Parser = require('./app/parser');
 const Renderer = require('./app/renderer');
 
 
+/* xejs argument:
+{
+    options:{
+        this.openTag: "{{",
+        this.closeTag: "}}",
+        this.ejsEscape false
+    },
+    tokens:[
+        [/regex/, "Command $1"]
+    ],
+    args:{
+        myVar: "var",
+        mtFunction: function(){...}
+    }
+}
+ */
+
+
 module.exports = class xejs {
     constructor(options) {
         options = options || {};
@@ -16,21 +34,27 @@ module.exports = class xejs {
         return this.renderFile(file, done);
     }
     renderFile(file, done) {
-        const res=this.renderer.render(file); //TODO: return promise
-        if(done) done(null,res);
-    }
-    renderString(file,includePath, done) {
-        if(!includePath && !done && typeof includePath==='function'){
-            done=includePath;
+        let error = null;
+        let res;
+        try {
+            res = this.renderer.render(file);
+        } catch (e) {
+            error = e;
         }
-        const res=this.renderer.renderString(file,this.includePath); //TODO: return promise
-        if(done) done(null,res);
+        if (done) done(error, res);
+    }
+    renderString(file, includePath, done) {
+        if (!includePath && !done && typeof includePath === 'function') {
+            done = includePath;
+        }
+        let error = null;
+        let res;
+        try {
+            res = this.renderer.renderString(file, includePath);
+        } catch (e) {
+            error = e;
+        }
+        if (done) done(error, res);
     }
 
 };
-
-/*module.exports = {
-    renderer: Renderer,
-    parser: TagParser,
-    defaultTags: defaultTags,
-};*/

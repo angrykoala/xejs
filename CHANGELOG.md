@@ -4,6 +4,7 @@
   * Changes in external API, now using a class instead of function.
   * Internal refactor on main file
   * Tests updated for new API
+  * Removed promises API support (temporally) to avoid "Unhandled promise rejection" errors
 
 0.6.2 / 2017-02-20
 ==================
