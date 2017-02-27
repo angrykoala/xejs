@@ -10,16 +10,15 @@ function loop(data, times) {
 
 
 module.exports = {
-    options: {
-        tokens: [
-            [/loop[\s]*\((.*),([0-9]*)\)/, "loop('$1','$2')"],
-            [/message/, "msg"]
-        ]
-    },
+    tokens: [
+        [/loop[\s]*\((.*),([0-9]*)\)/, "loop('$1','$2')"],
+        [/message/, "msg"]
+    ],
     args: {
         loop: loop,
         msg: "Hello World"
     },
+    fileDir: __dirname + '/test_files',
     regex: {
         match: [
             /# Xejs Test/,

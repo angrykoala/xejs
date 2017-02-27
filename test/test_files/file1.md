@@ -24,7 +24,7 @@ loop end
 A code file:
 
 ```js
-{{include ../package.json}}
+{{include ./example.json}}
 ```
 _package.json_
 
@@ -32,7 +32,7 @@ _package.json_
 
 ## Nested include
 
-{{ include file5.md }}
+{{ include file3.md }}
 
 ## Inline include
 This {{include file2.md}} contains file2

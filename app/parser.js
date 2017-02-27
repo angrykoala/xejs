@@ -5,8 +5,10 @@ const defaultTokens = [
     [/include\s+(\S+)/i, "xejs(\"$1\",parentPath)"]
 ];
 
-class TagParser {
+class Parser {
     constructor(options, tokens) {
+        options = options || {};
+
         this.tagRegex = /<%/g;
         this.openTagEJS = "<%- ";
         this.closeTagEJS = "%>";
@@ -24,6 +26,7 @@ class TagParser {
     //Will set and compile tokens
     setTokens(tokens) {
         tokens = tokens || [];
+        tokens = tokens.concat(defaultTokens);
         this.tokens = tokens.map((tokenData) => {
             //TODO: check tokens? throw if not valid
             const reg = this.compileTag(tokenData[0]);
@@ -98,6 +101,4 @@ function generateTagRegex(token, openTag, closeTag) {
     return new RegExp(openTag + tokenString + closeTag, modifier);
 }
 
-TagParser.defaultTags = defaultTokens;
-
-module.exports = TagParser;
+module.exports = Parser;

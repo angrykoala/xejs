@@ -13,7 +13,7 @@ XEJS allows you to render files with a custom tag-based language using [EJS](htt
 
 > Recursive templating, what could go wrong?
 
-> **WARNING:** Xejs is still unstable and under heavy development, please, if you are using xejs as a dependency in your project use `~` (tilde) instead of `^`(caret) in your package.json to avoid unexpected changes until version 1.0 is reached.
+> **WARNING:** Xejs is still unstable and under heavy development, please, if you are using xejs as a dependency in your project use `~` (tilde) instead of `^`(caret) in your package.json to avoid unexpected changes until version 1.0 is released.
 
 ## How it works
 **xejs** provides a custom renderer utility on top of **ejs**, allowing you to define your own tags of the type `{{ my tag }}` with custom delimiters (e.g. `<< my tag >>`).

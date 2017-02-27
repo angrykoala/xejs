@@ -13,8 +13,8 @@ function getFilePath(file, parentPath) {
 }
 
 class Renderer {
-    constructor(tagParser, args) {
-        this.parser = tagParser;
+    constructor(parser, args) {
+        this.parser = parser;
         this.args = args;
         this.renderedStack = [];
     }
@@ -29,7 +29,6 @@ class Renderer {
         return content;
     }
 
-    //Avoid repeating code
     renderString(content, includePath) {
         includePath = includePath || process.cwd();
         includePath += "/file";
