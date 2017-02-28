@@ -1,6 +1,6 @@
 "use strict";
 
-const ejs = require('ejs').renderer;
+const ejs = require('ejs').render;
 const fs = require('fs');
 const path = require('path');
 
