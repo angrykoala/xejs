@@ -23,17 +23,6 @@ class Parser {
         this.setTokens(tokens);
     }
 
-    //Will set and compile tokens
-    setTokens(tokens) {
-        tokens = tokens || [];
-        tokens = tokens.concat(defaultTokens);
-        this.tokens = tokens.map((tokenData) => {
-            //TODO: check tokens? throw if not valid
-            const reg = this.compileTag(tokenData[0]);
-            return [reg, tokenData[1]];
-        });
-    }
-
     //Replace tags of content
     execute(content) {
         content = this.escapeEJS(content);
@@ -43,6 +32,19 @@ class Parser {
             content = content.replace(t[0], this.replaceCallback.bind(this, t[1]));
         }
         return content;
+    }
+
+    //Private
+
+    //Will set and compile tokens
+    setTokens(tokens) {
+        tokens = tokens || [];
+        tokens = tokens.concat(defaultTokens);
+        this.tokens = tokens.map((tokenData) => {
+            //TODO: check tokens? throw if not valid
+            const reg = this.compileTag(tokenData[0]);
+            return [reg, tokenData[1]];
+        });
     }
 
     escapeEJS(content) {

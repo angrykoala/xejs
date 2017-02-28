@@ -3,7 +3,6 @@
 const Parser = require('./app/parser');
 const Renderer = require('./app/renderer');
 
-
 /* xejs argument:
 {
     options:{

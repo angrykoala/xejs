@@ -35,13 +35,15 @@ class Renderer {
         return this.renderContent(content, includePath);
     }
 
+    //Private
+
     renderContent(content, filePath) {
         content = this.parseContent(content);
-        const rendererOptions = this.getRendererOptions(filePath);
+        const rendererOptions = this.generateRendererOptions(filePath);
         return ejsRenderer(content, rendererOptions);
     }
 
-    getRendererOptions(filePath) {
+    generateRendererOptions(filePath) {
         const rendererOptions = Object.assign({}, this.args);
         rendererOptions.xejs = this.render.bind(this); //Recursive function to be used by EJS
         rendererOptions.parentPath = filePath;
