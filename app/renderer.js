@@ -1,16 +1,8 @@
 "use strict";
 
-const ejs = require('ejs');
+const ejs = require('ejs').renderer;
 const fs = require('fs');
 const path = require('path');
-
-const ejsRenderer = ejs.render;
-
-function getFilePath(file, parentPath) {
-    let filePath = file;
-    if (parentPath) filePath = path.join(parentPath, "../", file);
-    return filePath;
-}
 
 class Renderer {
     constructor(parser, args) {
@@ -40,7 +32,7 @@ class Renderer {
     renderContent(content, filePath) {
         content = this.parseContent(content);
         const rendererOptions = this.generateRendererOptions(filePath);
-        return ejsRenderer(content, rendererOptions);
+        return ejs(content, rendererOptions);
     }
 
     generateRendererOptions(filePath) {
@@ -62,6 +54,12 @@ class Renderer {
         if (this.renderedStack.indexOf(file) >= 0) return true;
         else return false;
     }
+}
+
+function getFilePath(file, parentPath) {
+    let filePath = file;
+    if (parentPath) filePath = path.join(parentPath, "../", file);
+    return filePath;
 }
 
 module.exports = Renderer;
