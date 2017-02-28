@@ -17,7 +17,6 @@ class Parser {
         this.closeTag = options.closeTag || "}}";
         this.ejsEscape = options.ejsEscape === false ? false : true;
 
-
         const commentTag = options.commentTag || "#";
         this.compileCommentTag(commentTag);
         this.setTokens(tokens);
