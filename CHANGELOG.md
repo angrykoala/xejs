@@ -1,3 +1,8 @@
+0.8.0 / ####-##-##
+==================
+
+
+
 0.7.0 / 2017-03-03
 ==================
 
@@ -6,7 +11,7 @@
   * Internal refactor on main file
   * Tests updated for new API
   * Removed promises API support (temporally) to avoid "Unhandled promise rejection" errors
-  * Small improvements in Readme file
+  * Readme file updated
 
 0.6.2 / 2017-02-20
 ==================
