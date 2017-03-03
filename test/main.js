@@ -7,14 +7,25 @@ const xejs = require('../main.js');
 
 const config = require('./config');
 
-describe("Main test", function() {
-    this.timeout(5000);
+describe("Main test", () => {
     const regex = config.regex;
-    it("Example file", function(done) {
+    let configRenderer;
+    let defaultRenderer;
+
+    beforeEach(() => {
+        configRenderer = new xejs({
+            tokens: config.tokens,
+            args: config.args
+        });
+        defaultRenderer = new xejs();
+    });
+
+    it("Example file", (done) => {
         assert.ok(xejs);
-        xejs(__dirname + '/file1.md', config.options, config.args, function(err, res) {
+        configRenderer.render(config.fileDir + '/file1.md', (err, res) => {
             assert.notOk(err);
             assert.ok(res);
+
             for (let i = 0; i < regex.match.length; i++) {
                 assert.match(res, regex.match[i]);
             }
@@ -25,14 +36,19 @@ describe("Main test", function() {
         });
     });
 
-    it("No arguments provided", function(done) {
-        xejs(__dirname + '/file1.md', function(err, res) {
+    it("No arguments provided", (done) => {
+        const renderer = new xejs();
+        const renderer2 = new xejs({});
+
+        renderer.render(config.fileDir + '/file1.md', (err, res) => {
             assert.notOk(err);
             assert.ok(res);
-            xejs(__dirname + '/file1.md', {}, function(err, res2) {
+
+            renderer2.render(config.fileDir + '/file1.md', (err, res2) => {
                 assert.notOk(err);
                 assert.ok(res2);
                 assert.strictEqual(res, res2);
+
                 assert.match(res, /Second\sfile\scontent/);
                 assert.match(res, /\{\{\s*message\s*\}\}/);
                 done();
@@ -40,28 +56,40 @@ describe("Main test", function() {
         });
     });
 
-    it("No ejs escape option", function(done) {
-        assert.ok(xejs);
-        const options = config.options;
-        options.ejsEscape = false;
-        xejs(__dirname + '/file3.md', options, config.args, function(err, res) {
+    it("No ejs escape option", (done) => {
+        const renderer = new xejs({
+            options: {
+                ejsEscape: false
+            },
+            tokens: config.tokens,
+            args: config.args
+        });
+
+        renderer.render(config.fileDir + '/ejs_tag.md', (err, res) => {
             assert.notOk(err);
             assert.ok(res);
-            assert.match(res, /Hello\sWorld\s*Hello\sWorld/);
+            assert.match(res, /Hello World\s*Hello World/);
             assert.notMatch(res, /<%-\s*msg\s*%>/);
-            options.ejsEscape = true;
-            xejs(__dirname + '/file3.md', options, config.args, function(err, res) {
+            const renderer2 = new xejs({
+                options: {
+                    ejsEscape: true
+                },
+                tokens: config.tokens,
+                args: config.args
+            });
+            renderer2.render(config.fileDir + '/ejs_tag.md', (err, res) => {
                 assert.notOk(err);
                 assert.ok(res);
-                assert.match(res, /Hello\sWorld/);
-                assert.notMatch(res, /Hello\sWorld\s*Hello\sWorld/);
+                assert.match(res, /Hello World/);
+                assert.notMatch(res, /Hello World\s*Hello World/);
                 assert.match(res, /<%-\s*msg\s*%>/);
                 done();
             });
         });
     });
-    it("Comment tags", function(done) {
-        xejs(__dirname + '/file4.md', function(err, res) {
+
+    it("Comment tags", (done) => {
+        defaultRenderer.render(config.fileDir + '/comments.md', (err, res) => {
             assert.notOk(err);
             assert.ok(res);
             assert.match(res, /#\sComment\stags\s+#\sNot\scomment\stags/);
@@ -69,31 +97,38 @@ describe("Main test", function() {
             done();
         });
     });
-    it("Return Promise", function(done) {
-        xejs(__dirname + "/file1.md", config.options, config.args).then(function(res) {
+
+    it("File not found error", (done) => {
+        configRenderer.render(config.fileDir + "/notfound.md", (err, res) => {
+            assert.ok(err);
+            assert.notOk(res);
+            done();
+        });
+    });
+    it.skip("Return Promise", (done) => {
+        configRenderer.render(config.fileDir + '/file1.md').then((res) => {
             assert.ok(res);
             done();
         });
     });
 
-    it("Rejected Promise", function(done) {
-        xejs(__dirname + "/notfound.md", config.options, config.args).then(function() {}, function(err) {
+    it.skip("Rejected Promise", (done) => {
+        configRenderer.render(config.fileDir + "/notfound.md").catch((err) => {
             assert.ok(err);
             done();
         });
     });
-    it("Render from string", function(done) {
-        fs.readFile(__dirname + '/file1.md', 'utf-8', function(err, res) {
+
+    it("Render from string", (done) => {
+        fs.readFile(config.fileDir + '/file1.md', 'utf-8', (err, res) => {
             assert.notOk(err);
             assert.ok(res);
-            xejs.renderString(res, {
-                includePath: __dirname
-            }, function(err, res) {
+            defaultRenderer.renderString(res, config.fileDir, (err, res) => {
                 assert.notOk(err);
                 assert.ok(res);
                 assert.match(res, /Second\sfile\scontent/);
                 assert.match(res, /\{\{\s*message\s*\}\}/);
-                xejs(__dirname + '/file1.md', {}, function(err, res2) {
+                defaultRenderer.render(config.fileDir + '/file1.md', (err, res2) => {
                     assert.notOk(err);
                     assert.ok(res2);
                     assert.strictEqual(res, res2);
@@ -102,83 +137,113 @@ describe("Main test", function() {
             });
         });
     });
-    it("Render file method", function(done) {
-        xejs.renderFile(__dirname + '/file1.md', config.options, config.args, function(err, res) {
+
+    it("Render file method", (done) => {
+        configRenderer.render(config.fileDir + '/file1.md', (err, res) => {
             assert.notOk(err);
             assert.ok(res);
-            for (let i = 0; i < regex.match.length; i++) {
-                assert.match(res, regex.match[i]);
-            }
-            for (let i = 0; i < regex.notMatch.length; i++) {
-                assert.notMatch(res, regex.notMatch[i]);
-            }
-            done();
+            configRenderer.renderFile(config.fileDir + '/file1.md', (err2, res2) => {
+                assert.notOk(err2);
+                assert.ok(res2);
+                assert.strictEqual(res, res2);
+                done();
+            });
         });
     });
 
-    it("Circular dependencies including files", function(done) {
-        xejs.renderFile(__dirname + '/file6.md', config.options, config.args, function(err) {
+    it("Circular dependencies including files", (done) => {
+        configRenderer.render(config.fileDir + '/circular1.md', (err) => {
             assert.ok(err);
             done();
         });
     });
 
-    it("Case insensitive tokens", function(done) {
-        xejs.renderFile(__dirname + '/case_sensitive.md', {
+    it("Case insensitive tokens", (done) => {
+        const renderer = new xejs({
             tokens: [
                 [/Message/, "msg"],
                 [/iMessage/i, "msg"]
-            ]
-        }, config.args, function(err, res) {
+            ],
+            args: config.args
+        });
+
+        renderer.render(config.fileDir + '/case_sensitive.md', (err, res) => {
             assert.notOk(err);
-            assert.match(res, /##\sCase\sSensitive\s*Hello\sWorld\s*\{\{message\}\}\s*\{\{MESSAGE\}\}\s*\{\{MeSSage\}\}/);
-            assert.match(res, /##\sCase\sInsensitive(\s*Hello\sWorld\s*){4}/);
+            assert.match(res, /##\sCase\sSensitive\s*Hello World\s*\{\{message\}\}\s*\{\{MESSAGE\}\}\s*\{\{MeSSage\}\}/);
+            assert.match(res, /##\sCase\sInsensitive(\s*Hello World\s*){4}/);
             done();
         });
     });
 
-    describe("Custom tags", function() {
-        let options;
-        beforeEach(function() {
-            options = {
-                tokens: config.options.tokens
-            };
-        });
+    describe("Custom tags", () => {
 
-        it("Double custom tags", function(done) {
-            options.openTag = "<<";
-            options.closeTag = ">>";
+        it("Double custom tags", (done) => {
+            const renderer = new xejs({
+                options: {
+                    openTag: "<<",
+                    closeTag: ">>"
+                },
+                args: config.args,
+                tokens: config.tokens
+            });
 
-            xejs.renderFile(__dirname + '/custom_tags.md', options, config.args, function(err, res) {
+            renderer.renderFile(config.fileDir + '/custom_tags.md', (err, res) => {
                 assert.notOk(err);
                 assert.ok(res);
-                assert.match(res, /#\sCustom\sTags\s*##\sDouble\sTags\s*Hello\sWorld\s*##\sSecond\sfile/);
+                assert.match(res, /# Custom Tags\s*## Double Tags\s*Hello World\s*## Second file/);
                 done();
             });
 
         });
 
-        it.skip("Only opening tags", function() {
-            throw new Error("Not implemented");
+        it("Only opening tags", () => {
+            const renderer = new xejs({
+                options: {
+                    openTag: "@",
+                    singleTag: true
+                },
+                args: config.args,
+                tokens: config.tokens
+            });
 
+            renderer.renderFile(config.fileDir + '/single_tag.md', (err, res) => {
+                assert.notOk(err);
+                assert.ok(res);
+                assert.match(res, /^Hello World\s+# Unclosed Tags/);
+                assert.match(res, /## Valid Tags\s*Hello World\s+##\sSecond\sfile\s*Second\sfile\scontent\s+Hello World Hello World\s+Hello World\nHello World\s+Hello World not\_parse/);
+                assert.match(res, /##\sInvalid\sTags\s+@message@\s+@\smessage\s+@message@message\s+test@message\s+@includefile2\.md\s+{{message}}/);
+                assert.match(res, /##\sComments\s+@\s#message\s+@@#message\s+@ # message\s+#message\s+a@#message space/);
+
+
+            });
         });
 
-        it("Custom comment tags", function(done) {
-            options.commentTag = "@";
-            xejs.renderFile(__dirname + '/custom_tags.md', options, config.args, function(err, res) {
+        it("Custom comment tags", (done) => {
+            const renderer = new xejs({
+                options: {
+                    commentTag: "@"
+                },
+                args: config.args,
+            });
+            renderer.renderFile(config.fileDir + '/custom_tags.md', (err, res) => {
                 assert.notOk(err);
                 assert.ok(res);
                 assert.notMatch(res, /\{\{\@[\s\S]*?\}\}/);
-                assert.notMatch(res, /custom\scomment/);
-                assert.match(res, /##\sCustom\sComment\s*<<#\snormal\scomment\s>>/);
+                assert.notMatch(res, /custom comment/);
+                assert.match(res, /## Custom Comment\s*<<# normal comment >>/);
                 done();
             });
         });
-        it("Comments with custom tags", function(done) {
-            options.openTag = "<<";
-            options.closeTag = ">>";
+        it("Comments with custom tags", (done) => {
+            const renderer = new xejs({
+                options: {
+                    openTag: "<<",
+                    closeTag: ">>"
+                },
+                args: config.args
+            });
 
-            xejs.renderFile(__dirname + '/custom_tags.md', options, config.args, function(err, res) {
+            renderer.renderFile(config.fileDir + '/custom_tags.md', (err, res) => {
                 assert.notOk(err);
                 assert.ok(res);
                 assert.notMatch(res, /<<#[\s\S]*?>>/);

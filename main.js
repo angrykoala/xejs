@@ -1,64 +1,59 @@
 "use strict";
 
-const TagParser = require('./app/tag_parser');
+const Parser = require('./app/parser');
 const Renderer = require('./app/renderer');
 
-const defaultTags = TagParser.defaultTags;
-
-function getTokens(tokens) {
-    let res = defaultTags;
-    if (tokens) res = res.concat(tokens);
-    return res;
-}
-
-
-function renderFile(file, renderingOptions, args, done) {
-    return render(file, renderingOptions, args, done, false);
-}
-
-function renderString(content, renderingOptions, args, done) {
-    return render(content, renderingOptions, args, done, true);
-}
-
-function render(file, renderingOptions, args, done, renderString) {
-    //Extract this
-    if (!done && typeof args === "function") {
-        done = args;
-        args = [];
-    } else if (!done && !args && typeof renderingOptions === "function") {
-        done = renderingOptions;
-        renderingOptions = {};
+/* xejs argument:
+{
+    options:{
+        this.openTag: "{{",
+        this.closeTag: "}}",
+        this.ejsEscape false
+    },
+    tokens:[
+        [/regex/, "Command $1"]
+    ],
+    args:{
+        myVar: "var",
+        mtFunction: function(){...}
     }
-    //####
-
-    const tokens = getTokens(renderingOptions.tokens);
-
-    let res = null;
-    let err = null;
-    try {
-        const parser = new TagParser(renderingOptions, tokens);
-        const renderer = new Renderer(parser, args);
-        if (renderString) {
-            const includePath = renderingOptions.includePath;
-            res = renderer.renderString(file, includePath); //file is content here
-        } else {
-            res = renderer.render(file);
-        }
-    } catch (e) {
-        err = e;
-    }
-    if (done) return done(err, res);
-    return new Promise(function(resolve, reject) {
-        if (err) {
-            reject(err);
-        } else {
-            resolve(res);
-        }
-    });
 }
+ */
 
 
+module.exports = class xejs {
+    constructor(options) {
+        options = options || {};
 
-module.exports = renderFile;
-module.exports.renderFile = renderFile;
-module.exports.renderString = renderString;
+        const parser = new Parser(options.options, options.tokens);
+        this.renderer = new Renderer(parser, options.args);
+    }
+
+    render(file, done) {
+        return this.renderFile(file, done);
+    }
+    renderFile(file, done) {
+        let error = null;
+        let res;
+        try {
+            res = this.renderer.render(file);
+        } catch (e) {
+            error = e;
+        }
+        if (done) done(error, res);
+    }
+    renderString(file, includePath, done) {
+        if (!includePath && !done && typeof includePath === 'function') {
+            done = includePath;
+        }
+        let error = null;
+        let res;
+        try {
+            res = this.renderer.renderString(file, includePath);
+        } catch (e) {
+            error = e;
+        }
+        if (done) done(error, res);
+    }
+
+};
