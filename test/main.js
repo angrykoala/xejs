@@ -68,7 +68,7 @@ describe("Main test", () => {
         renderer.render(config.fileDir + '/ejs_tag.md', (err, res) => {
             assert.notOk(err);
             assert.ok(res);
-            assert.match(res, /Hello\sWorld\s*Hello\sWorld/);
+            assert.match(res, /Hello World\s*Hello World/);
             assert.notMatch(res, /<%-\s*msg\s*%>/);
             const renderer2 = new xejs({
                 options: {
@@ -80,8 +80,8 @@ describe("Main test", () => {
             renderer2.render(config.fileDir + '/ejs_tag.md', (err, res) => {
                 assert.notOk(err);
                 assert.ok(res);
-                assert.match(res, /Hello\sWorld/);
-                assert.notMatch(res, /Hello\sWorld\s*Hello\sWorld/);
+                assert.match(res, /Hello World/);
+                assert.notMatch(res, /Hello World\s*Hello World/);
                 assert.match(res, /<%-\s*msg\s*%>/);
                 done();
             });
@@ -169,8 +169,8 @@ describe("Main test", () => {
 
         renderer.render(config.fileDir + '/case_sensitive.md', (err, res) => {
             assert.notOk(err);
-            assert.match(res, /##\sCase\sSensitive\s*Hello\sWorld\s*\{\{message\}\}\s*\{\{MESSAGE\}\}\s*\{\{MeSSage\}\}/);
-            assert.match(res, /##\sCase\sInsensitive(\s*Hello\sWorld\s*){4}/);
+            assert.match(res, /##\sCase\sSensitive\s*Hello World\s*\{\{message\}\}\s*\{\{MESSAGE\}\}\s*\{\{MeSSage\}\}/);
+            assert.match(res, /##\sCase\sInsensitive(\s*Hello World\s*){4}/);
             done();
         });
     });
@@ -190,15 +190,32 @@ describe("Main test", () => {
             renderer.renderFile(config.fileDir + '/custom_tags.md', (err, res) => {
                 assert.notOk(err);
                 assert.ok(res);
-                assert.match(res, /#\sCustom\sTags\s*##\sDouble\sTags\s*Hello\sWorld\s*##\sSecond\sfile/);
+                assert.match(res, /# Custom Tags\s*## Double Tags\s*Hello World\s*## Second file/);
                 done();
             });
 
         });
 
-        it.skip("Only opening tags", () => {
-            throw new Error("Not implemented");
+        it("Only opening tags", () => {
+            const renderer = new xejs({
+                options: {
+                    openTag: "@",
+                    singleTag: true
+                },
+                args: config.args,
+                tokens: config.tokens
+            });
 
+            renderer.renderFile(config.fileDir + '/single_tag.md', (err, res) => {
+                assert.notOk(err);
+                assert.ok(res);
+                assert.match(res, /^Hello World\s+# Unclosed Tags/);
+                assert.match(res, /## Valid Tags\s*Hello World\s+##\sSecond\sfile\s*Second\sfile\scontent\s+Hello World Hello World\s+Hello World\nHello World\s+Hello World not\_parse/);
+                assert.match(res, /##\sInvalid\sTags\s+@message@\s+@\smessage\s+@message@message\s+test@message\s+@includefile2\.md\s+{{message}}/);
+                assert.match(res, /##\sComments\s+@\s#message\s+@@#message\s+@ # message\s+#message\s+a@#message space/);
+
+
+            });
         });
 
         it("Custom comment tags", (done) => {
@@ -212,8 +229,8 @@ describe("Main test", () => {
                 assert.notOk(err);
                 assert.ok(res);
                 assert.notMatch(res, /\{\{\@[\s\S]*?\}\}/);
-                assert.notMatch(res, /custom\scomment/);
-                assert.match(res, /##\sCustom\sComment\s*<<#\snormal\scomment\s>>/);
+                assert.notMatch(res, /custom comment/);
+                assert.match(res, /## Custom Comment\s*<<# normal comment >>/);
                 done();
             });
         });

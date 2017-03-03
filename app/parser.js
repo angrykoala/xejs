@@ -5,20 +5,24 @@ const defaultTokens = [
     [/include\s+(\S+)/i, "xejs(\"$1\",parentPath)"]
 ];
 
+const parserConst = {
+    tagRegex: /<%/g,
+    openTagEJS: "<%-",
+    closeTagEJS: "%>",
+    singleTagClose: "(?=\\s)"
+};
+
 class Parser {
     constructor(options, tokens) {
         options = options || {};
 
-        this.tagRegex = /<%/g;
-        this.openTagEJS = "<%- ";
-        this.closeTagEJS = "%>";
 
         this.openTag = options.openTag || "{{";
         this.closeTag = options.closeTag || "}}";
         this.ejsEscape = options.ejsEscape !== false;
+        this.singleTag = options.singleTag === true;
 
-        const commentTag = options.commentTag || "#";
-        this.compileCommentTag(commentTag);
+        this.setCommentTag(options.commentTag);
         this.setTokens(tokens);
     }
 
@@ -46,8 +50,14 @@ class Parser {
         });
     }
 
+    setCommentTag(commentTag) {
+        commentTag = commentTag || "#";
+        commentTag = this.openTag + commentTag;
+        this.commentRegex = this.compileTag(/[\s\S]*/i, commentTag);
+    }
+
     escapeEJS(content) {
-        if (this.ejsEscape) content = content.replace(this.tagRegex, "<%%");
+        if (this.ejsEscape) content = content.replace(parserConst.tagRegex, "<%%");
         return content;
     }
 
@@ -56,7 +66,13 @@ class Parser {
         let params = Array.prototype.slice.call(arguments);
         const command = params[0];
         params = params.slice(2, params.length - 2);
-        let result = this.openTagEJS + command + this.closeTagEJS;
+        let result = parserConst.openTagEJS + command + parserConst.closeTagEJS;
+
+        if (this.singleTag) {
+            const firstSpace = params.shift();
+            if (firstSpace === undefined || firstSpace === null) throw "Problem parsing single tags";
+            result = firstSpace + result;
+        }
 
         for (let i = 0; i < params.length; i++) {
             const paramValue = "$" + (i + 1);
@@ -73,15 +89,15 @@ class Parser {
     }
 
     // Generates regex from token
-    compileTag(token) {
-        return generateTagRegex(token, this.openTag, this.closeTag);
-    }
+    compileTag(token, openTag) {
+        let closeTag = this.closeTag;
+        openTag = openTag || this.openTag;
 
-    // Generates comment regex
-    compileCommentTag(commentTag) {
-        const token = /[\s\S]*/i;
-        const openTag = this.openTag + commentTag;
-        this.commentRegex = generateTagRegex(token, openTag, this.closeTag);
+        if (this.singleTag) {
+            closeTag = parserConst.singleTagClose;
+            openTag = "(\\s|^)" + openTag;
+        }
+        return generateTagRegex(token, openTag, closeTag, this.singleTag);
     }
 
     escapeToken(input) {
@@ -92,13 +108,16 @@ class Parser {
 //Helper (private) functions
 
 //Returns final regex for a xejs tag
-function generateTagRegex(token, openTag, closeTag) {
+function generateTagRegex(token, openTag, closeTag, singleTag) {
     let tokenString = token.source;
     const modifier = token.ignoreCase ? "gi" : "g";
 
     tokenString = tokenString.replace(/\\s/g, "\ ");
-    tokenString = "\\ *?" + tokenString + "?\\ *?";
-
+    if (singleTag) {
+        tokenString = tokenString + "?";
+    } else {
+        tokenString = "\\ *?" + tokenString + "?\\ *?";
+    }
     return new RegExp(openTag + tokenString + closeTag, modifier);
 }
 

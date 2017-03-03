@@ -1,10 +1,12 @@
-0.7.0 / ####-##-##
+0.7.0 / 2017-03-03
 ==================
 
+  * Single tag support (e.g. @include file.md)
   * Changes in external API, now using a class instead of function.
   * Internal refactor on main file
   * Tests updated for new API
   * Removed promises API support (temporally) to avoid "Unhandled promise rejection" errors
+  * Small improvements in Readme file
 
 0.6.2 / 2017-02-20
 ==================

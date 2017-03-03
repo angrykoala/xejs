@@ -25,7 +25,7 @@ Only strict matched tags will be parsed, meaning that even if the opening closin
 The original **EJS** tags of the file (`<% %>`) will be escaped and won't be rendered by xejs.
 
 ## Usage
-_For xejs > 0.7_    
+> API for xejs > 0.7    
 
 
 ```js
@@ -61,6 +61,7 @@ All parameters are part of the object passed to the constructor. All are optiona
     * `closeTag`: _string_ Represents the ending of the tag. default: `}}`.
     * `commentTag`: _string_ Represents the mark of a comment tag that won't be rendered. Comment tag will be used next to the open tag. default: `#` (A default comment would be {{# my comment}}).
     * `ejsEscape`: _boolean_ If set to true, ejs tags (`<% %>`) will be escaped before rendering, to avoid ejs code injection. If false, xejs would act as an extension of a simple ejs parser. default: `true`.
+    * `singleTag`: _boolean_ If set to true, only opening tokens will be used (e.g. `@msg`). While using this option, closeTag option will be ignored.
 * **tokens**: An array of pairs, representing the regex tokens to match and the substitution. Each pair would be of the style [/tagRegex/,"tagCommand"].
     * The first element of each pair represents a regex to match, it can use the `i` modifier and capturing groups `(...)` to use `$` arguments. This regex will automatically be compiled into a valid xejs regex, adding the open and closing tags.
     * The second argument is a string representing a js expression. The expression will be executed by ejs and the result will be added in the place of the tag. Any js expression could be used, but it is recommended to make use of functions specified in `args` parameters. To change the tag for a string, simply add simple quotes to the string `"'string to replace, not js code'"`.
@@ -76,3 +77,35 @@ Using the tags delimiters `{{ ... }}`
 * `/[Tt]itle2/` - `"'title'"` will render all `{{title2}}` tags into the string `"title"`, without the need of extra arguments.
 
 >**Warning:** Only simple tags allowed, nested tags and html-based tags not supported
+
+
+### Deprecated API
+> For xejs<0.7
+
+The following example shows the deprecated usage of xejs for versions before 0.7
+
+This API and documentation is no longer maintained.
+```js
+var xejs=require('xejs');
+var fs= require('fs');
+
+
+var options={
+    openTag: "{{",
+    closeTag: "}}",
+    commentTag: "#",
+    tokens: [
+        [/bold\s(.+)/, "'<b>$1</b>'"]
+    ]
+};
+
+
+xejs("example/test.ejs",options,{}, function(err,file){
+    fs.writeFileSync('example/prueba.html',file);
+});
+```
+
+### License
+Xejs is being developed and maintained as Open-Source software by @angrykoala (https://github.com/angrykoala) licensed under [GNU GENERAL PUBLIC LICENSE version 3](https://github.com/angrykoala/xejs/blob/master/LICENSE)
+
+The original source code can be found at: <https://github.com/angrykoala/xejs>
