@@ -175,6 +175,36 @@ describe("Main test", () => {
         });
     });
 
+    it("Not default tokens", (done) => {
+        const renderer = new xejs({
+            options: {
+                defaultTokens: false,
+            }
+        });
+        renderer.render(config.fileDir + '/circular1.md', (err, res) => {
+            assert.notOk(err);
+            assert.ok(res);
+            assert.match(res,/# Circular test\s## file 1\s{{ include circular2.md }}/);
+            done();
+        });
+    });
+    
+    it("Not default tokens with args", (done)=>{
+        const renderer = new xejs({
+            options: {
+                defaultTokens: false,
+            },
+            tokens: config.tokens,
+            args: config.args
+        });
+        renderer.render(config.fileDir + '/file4.md', (err, res) => {
+            assert.notOk(err);
+            assert.ok(res);
+            assert.match(res,/## File 4\s{{ include file2.md }}\sHello World/);
+            done();
+        });
+    });
+
     describe("Custom tags", () => {
 
         it("Double custom tags", (done) => {

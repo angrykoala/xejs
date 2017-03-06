@@ -62,6 +62,7 @@ All parameters are part of the object passed to the constructor. All are optiona
     * `commentTag`: _string_ Represents the mark of a comment tag that won't be rendered. Comment tag will be used next to the open tag. default: `#` (A default comment would be {{# my comment}}).
     * `ejsEscape`: _boolean_ If set to true, ejs tags (`<% %>`) will be escaped before rendering, to avoid ejs code injection. If false, xejs would act as an extension of a simple ejs parser. default: `true`.
     * `singleTag`: _boolean_ If set to true, only opening tokens will be used (e.g. `@msg`). While using this option, closeTag option will be ignored.
+    * `defaultTokens`: _boolean_ disable default tokens (`include`).
 * **tokens**: An array of pairs, representing the regex tokens to match and the substitution. Each pair would be of the style [/tagRegex/,"tagCommand"].
     * The first element of each pair represents a regex to match, it can use the `i` modifier and capturing groups `(...)` to use `$` arguments. This regex will automatically be compiled into a valid xejs regex, adding the open and closing tags.
     * The second argument is a string representing a js expression. The expression will be executed by ejs and the result will be added in the place of the tag. Any js expression could be used, but it is recommended to make use of functions specified in `args` parameters. To change the tag for a string, simply add simple quotes to the string `"'string to replace, not js code'"`.

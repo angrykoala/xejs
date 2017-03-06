@@ -4,7 +4,7 @@ const ejs = require('ejs').render;
 const fs = require('fs');
 const path = require('path');
 
-class Renderer {
+module.exports = class Renderer {
     constructor(parser, args) {
         this.parser = parser;
         this.args = args;
@@ -37,7 +37,7 @@ class Renderer {
 
     generateRendererOptions(filePath) {
         const rendererOptions = Object.assign({}, this.args);
-        rendererOptions.xejs = this.render.bind(this); //Recursive function to be used by EJS
+        if (this.parser.defaultTokens) rendererOptions.xejs = this.render.bind(this); //Recursive function to be used by EJS
         rendererOptions.parentPath = filePath;
         return rendererOptions;
     }
@@ -54,12 +54,10 @@ class Renderer {
         if (this.renderedStack.indexOf(file) >= 0) return true;
         else return false;
     }
-}
+};
 
 function getFilePath(file, parentPath) {
     let filePath = file;
     if (parentPath) filePath = path.join(parentPath, "../", file);
     return filePath;
 }
-
-module.exports = Renderer;
