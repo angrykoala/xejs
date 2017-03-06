@@ -2,7 +2,9 @@
 ==================
 
     * Added flag to disable default tokens
-
+    * Tests better organized
+    * Added Promises support again
+    * Readme small improvements
 
 0.7.0 / 2017-03-03
 ==================

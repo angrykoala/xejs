@@ -7,7 +7,7 @@ const xejs = require('../main.js');
 
 const config = require('./config');
 
-describe("Main test", () => {
+describe("Xejs tests", () => {
     const regex = config.regex;
     let configRenderer;
     let defaultRenderer;
@@ -56,37 +56,7 @@ describe("Main test", () => {
         });
     });
 
-    it("No ejs escape option", (done) => {
-        const renderer = new xejs({
-            options: {
-                ejsEscape: false
-            },
-            tokens: config.tokens,
-            args: config.args
-        });
 
-        renderer.render(config.fileDir + '/ejs_tag.md', (err, res) => {
-            assert.notOk(err);
-            assert.ok(res);
-            assert.match(res, /Hello World\s*Hello World/);
-            assert.notMatch(res, /<%-\s*msg\s*%>/);
-            const renderer2 = new xejs({
-                options: {
-                    ejsEscape: true
-                },
-                tokens: config.tokens,
-                args: config.args
-            });
-            renderer2.render(config.fileDir + '/ejs_tag.md', (err, res) => {
-                assert.notOk(err);
-                assert.ok(res);
-                assert.match(res, /Hello World/);
-                assert.notMatch(res, /Hello World\s*Hello World/);
-                assert.match(res, /<%-\s*msg\s*%>/);
-                done();
-            });
-        });
-    });
 
     it("Comment tags", (done) => {
         defaultRenderer.render(config.fileDir + '/comments.md', (err, res) => {
@@ -98,66 +68,55 @@ describe("Main test", () => {
         });
     });
 
-    it("File not found error", (done) => {
-        configRenderer.render(config.fileDir + "/notfound.md", (err, res) => {
-            assert.ok(err);
-            assert.notOk(res);
-            done();
-        });
-    });
-    it.skip("Return Promise", (done) => {
-        configRenderer.render(config.fileDir + '/file1.md').then((res) => {
-            assert.ok(res);
-            done();
-        });
-    });
+    describe("Rendering inputs", () => {
 
-    it.skip("Rejected Promise", (done) => {
-        configRenderer.render(config.fileDir + "/notfound.md").catch((err) => {
-            assert.ok(err);
-            done();
+        it("File not found error", (done) => {
+            configRenderer.render(config.fileDir + "/notfound.md", (err, res) => {
+                assert.ok(err);
+                assert.notOk(res);
+                done();
+            });
         });
-    });
 
-    it("Render from string", (done) => {
-        fs.readFile(config.fileDir + '/file1.md', 'utf-8', (err, res) => {
-            assert.notOk(err);
-            assert.ok(res);
-            defaultRenderer.renderString(res, config.fileDir, (err, res) => {
+        it("Render from string", (done) => {
+            fs.readFile(config.fileDir + '/file1.md', 'utf-8', (err, res) => {
                 assert.notOk(err);
                 assert.ok(res);
-                assert.match(res, /Second\sfile\scontent/);
-                assert.match(res, /\{\{\s*message\s*\}\}/);
-                defaultRenderer.render(config.fileDir + '/file1.md', (err, res2) => {
+                defaultRenderer.renderString(res, config.fileDir, (err, res) => {
                     assert.notOk(err);
+                    assert.ok(res);
+                    assert.match(res, /Second\sfile\scontent/);
+                    assert.match(res, /\{\{\s*message\s*\}\}/);
+                    defaultRenderer.render(config.fileDir + '/file1.md', (err, res2) => {
+                        assert.notOk(err);
+                        assert.ok(res2);
+                        assert.strictEqual(res, res2);
+                        done();
+                    });
+                });
+            });
+        });
+
+        it("Render file method", (done) => {
+            configRenderer.render(config.fileDir + '/file1.md', (err, res) => {
+                assert.notOk(err);
+                assert.ok(res);
+                configRenderer.renderFile(config.fileDir + '/file1.md', (err2, res2) => {
+                    assert.notOk(err2);
                     assert.ok(res2);
                     assert.strictEqual(res, res2);
                     done();
                 });
             });
         });
-    });
 
-    it("Render file method", (done) => {
-        configRenderer.render(config.fileDir + '/file1.md', (err, res) => {
-            assert.notOk(err);
-            assert.ok(res);
-            configRenderer.renderFile(config.fileDir + '/file1.md', (err2, res2) => {
-                assert.notOk(err2);
-                assert.ok(res2);
-                assert.strictEqual(res, res2);
+        it("Circular dependencies including files", (done) => {
+            configRenderer.render(config.fileDir + '/circular1.md', (err) => {
+                assert.ok(err);
                 done();
             });
         });
     });
-
-    it("Circular dependencies including files", (done) => {
-        configRenderer.render(config.fileDir + '/circular1.md', (err) => {
-            assert.ok(err);
-            done();
-        });
-    });
-
     it("Case insensitive tokens", (done) => {
         const renderer = new xejs({
             tokens: [
@@ -175,33 +134,106 @@ describe("Main test", () => {
         });
     });
 
-    it("Not default tokens", (done) => {
-        const renderer = new xejs({
-            options: {
-                defaultTokens: false,
-            }
+    describe("Parser Options", () => {
+        it("No ejs escape option", (done) => {
+            const renderer = new xejs({
+                options: {
+                    ejsEscape: false
+                },
+                tokens: config.tokens,
+                args: config.args
+            });
+
+            renderer.render(config.fileDir + '/ejs_tag.md', (err, res) => {
+                assert.notOk(err);
+                assert.ok(res);
+                assert.match(res, /Hello World\s*Hello World/);
+                assert.notMatch(res, /<%-\s*msg\s*%>/);
+                const renderer2 = new xejs({
+                    options: {
+                        ejsEscape: true
+                    },
+                    tokens: config.tokens,
+                    args: config.args
+                });
+                renderer2.render(config.fileDir + '/ejs_tag.md', (err, res) => {
+                    assert.notOk(err);
+                    assert.ok(res);
+                    assert.match(res, /Hello World/);
+                    assert.notMatch(res, /Hello World\s*Hello World/);
+                    assert.match(res, /<%-\s*msg\s*%>/);
+                    done();
+                });
+            });
         });
-        renderer.render(config.fileDir + '/circular1.md', (err, res) => {
-            assert.notOk(err);
-            assert.ok(res);
-            assert.match(res,/# Circular test\s## file 1\s{{ include circular2.md }}/);
-            done();
+
+        it("Not default tokens option", (done) => {
+            const renderer = new xejs({
+                options: {
+                    defaultTokens: false,
+                }
+            });
+            renderer.render(config.fileDir + '/circular1.md', (err, res) => {
+                assert.notOk(err);
+                assert.ok(res);
+                assert.match(res, /# Circular test\s## file 1\s{{ include circular2.md }}/);
+                done();
+            });
+        });
+
+        it("Not default tokens option with args", (done) => {
+            const renderer = new xejs({
+                options: {
+                    defaultTokens: false,
+                },
+                tokens: config.tokens,
+                args: config.args
+            });
+            renderer.render(config.fileDir + '/file4.md', (err, res) => {
+                assert.notOk(err);
+                assert.ok(res);
+                assert.match(res, /## File 4\s{{ include file2.md }}\sHello World/);
+                done();
+            });
         });
     });
-    
-    it("Not default tokens with args", (done)=>{
-        const renderer = new xejs({
-            options: {
-                defaultTokens: false,
-            },
-            tokens: config.tokens,
-            args: config.args
+
+    describe("Promises interface", () => {
+        it("Resolve Promise", (done) => {
+            configRenderer.render(config.fileDir + '/file1.md').then((res) => {
+                assert.ok(res);
+                for (let i = 0; i < regex.match.length; i++) {
+                    assert.match(res, regex.match[i]);
+                }
+                for (let i = 0; i < regex.notMatch.length; i++) {
+                    assert.notMatch(res, regex.notMatch[i]);
+                }
+                done();
+            });
         });
-        renderer.render(config.fileDir + '/file4.md', (err, res) => {
-            assert.notOk(err);
-            assert.ok(res);
-            assert.match(res,/## File 4\s{{ include file2.md }}\sHello World/);
-            done();
+
+        it("Reject Promise", (done) => {
+            configRenderer.render(config.fileDir + "/notfound.md").catch((err) => {
+                assert.ok(err);
+                done();
+            });
+        });
+
+        it("Render from String Promise", (done) => {
+            fs.readFile(config.fileDir + '/file1.md', 'utf-8', (err, res) => {
+                assert.notOk(err);
+                assert.ok(res);
+                configRenderer.renderString(res, config.fileDir).then((res) => {
+                    assert.ok(res);
+                    for (let i = 0; i < regex.match.length; i++) {
+                        assert.match(res, regex.match[i]);
+                    }
+                    for (let i = 0; i < regex.notMatch.length; i++) {
+                        assert.notMatch(res, regex.notMatch[i]);
+                    }
+                    done();
+                });
+            });
         });
     });
 

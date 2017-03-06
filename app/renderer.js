@@ -22,7 +22,6 @@ module.exports = class Renderer {
     }
 
     renderString(content, includePath) {
-        includePath = includePath || process.cwd();
         includePath += "/file";
         return this.renderContent(content, includePath);
     }

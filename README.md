@@ -69,6 +69,14 @@ All parameters are part of the object passed to the constructor. All are optiona
     * By default, xejs will preload the token `{{ include myfile }}` to recursively parse and include other files using xejs.
 * **args**: args will be a simple object of variables and functions to be added to the scope of the xejs parser, allowing to execute function, or use common variables as part of the rendering process.
 
+#### Xejs render method
+3 different interfaces are provided in a xejsRenderer:
+* `renderFile(file,done)`: Will render given file, executing `done(err,res)` afterwards, if no callback is provided, a Promise will be returned.
+* `render(file,done)`: Sugar-syntax for renderFile.
+* `renderString(content, includePath, done)`: Will render given content string, executing `done(err,res)` afterwards, if no callback is provided, a Promise will be returned.
+    * The _optional_ argument `includePath` defines the path to use for include routing. If none provided, the current cwd path will be used.
+
+>In all 3 methods, a Promise will be returned if no callback is defined. However, the promise won't be returned otherwise.
 
 #### Examples:
 Using the tags delimiters `{{ ... }}`
