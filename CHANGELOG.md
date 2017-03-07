@@ -1,4 +1,4 @@
-0.8.0 / ####-##-##
+0.7.1 / 2017-03-07
 ==================
 
     * Added flag to disable default tokens
