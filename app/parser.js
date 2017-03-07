@@ -12,7 +12,7 @@ const parserConst = {
     singleTagClose: "(?=\\s)"
 };
 
-class Parser {
+module.exports = class Parser {
     constructor(options, tokens) {
         options = options || {};
 
@@ -21,6 +21,7 @@ class Parser {
         this.closeTag = options.closeTag || "}}";
         this.ejsEscape = options.ejsEscape !== false;
         this.singleTag = options.singleTag === true;
+        this.defaultTokens = options.defaultTokens !== false;
 
         this.setCommentTag(options.commentTag);
         this.setTokens(tokens);
@@ -42,7 +43,7 @@ class Parser {
     //Will set and compile tokens
     setTokens(tokens) {
         tokens = tokens || [];
-        tokens = tokens.concat(defaultTokens);
+        if(this.defaultTokens) tokens = tokens.concat(defaultTokens);
         this.tokens = tokens.map((tokenData) => {
             //TODO: check tokens? throw if not valid
             const reg = this.compileTag(tokenData[0]);
@@ -103,7 +104,7 @@ class Parser {
     escapeToken(input) {
         return input.replace(/(["'<%>=-])/g, "\\$1");
     }
-}
+};
 
 //Helper (private) functions
 
@@ -120,5 +121,3 @@ function generateTagRegex(token, openTag, closeTag, singleTag) {
     }
     return new RegExp(openTag + tokenString + closeTag, modifier);
 }
-
-module.exports = Parser;

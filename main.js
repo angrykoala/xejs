@@ -34,26 +34,35 @@ module.exports = class xejs {
     }
     renderFile(file, done) {
         let error = null;
+        done = done || promesify;
         let res;
         try {
             res = this.renderer.render(file);
         } catch (e) {
             error = e;
         }
-        if (done) done(error, res);
+        return done(error, res);
     }
-    renderString(file, includePath, done) {
+    renderString(content, includePath, done) {
         if (!includePath && !done && typeof includePath === 'function') {
             done = includePath;
         }
+        done = done || promesify;
+        includePath = includePath || process.cwd();
         let error = null;
         let res;
         try {
-            res = this.renderer.renderString(file, includePath);
+            res = this.renderer.renderString(content, includePath);
         } catch (e) {
             error = e;
         }
-        if (done) done(error, res);
+        return done(error, res);
     }
 
 };
+
+// Private function to return a promise if no done is found
+function promesify(err, res) {
+    if (!err) return Promise.resolve(res);
+    else return Promise.reject(err);
+}
