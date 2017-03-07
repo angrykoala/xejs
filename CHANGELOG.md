@@ -2,7 +2,7 @@
 ==================
 
     * Added flag to disable default tokens
-    * Tests better organized
+    * Tests better organized and regexes slightly improved
     * Added Promises support again
     * Readme small improvements
 

@@ -49,8 +49,8 @@ describe("Xejs tests", () => {
                 assert.ok(res2);
                 assert.strictEqual(res, res2);
 
-                assert.match(res, /Second\sfile\scontent/);
-                assert.match(res, /\{\{\s*message\s*\}\}/);
+                assert.match(res, /Second file content/);
+                assert.match(res, /{{ *message *}}/);
                 done();
             });
         });
@@ -62,8 +62,8 @@ describe("Xejs tests", () => {
         defaultRenderer.render(config.fileDir + '/comments.md', (err, res) => {
             assert.notOk(err);
             assert.ok(res);
-            assert.match(res, /#\sComment\stags\s+#\sNot\scomment\stags/);
-            assert.match(res, /#\sNot\scomment\stags\s+\{\{\s#\snot\scomment\stag\}\}\s*\{\{#\sMultiline\s+not\ssupported\}\}/);
+            assert.match(res, /# Comment tags\s+# Not comment tags/);
+            assert.match(res, /# Not comment tags\s+{{ # not comment tag}}\s*{{# Multiline\s+not\ssupported}}/);
             done();
         });
     });
@@ -85,8 +85,8 @@ describe("Xejs tests", () => {
                 defaultRenderer.renderString(res, config.fileDir, (err, res) => {
                     assert.notOk(err);
                     assert.ok(res);
-                    assert.match(res, /Second\sfile\scontent/);
-                    assert.match(res, /\{\{\s*message\s*\}\}/);
+                    assert.match(res, /Second file content/);
+                    assert.match(res, /{{ *message *}}/);
                     defaultRenderer.render(config.fileDir + '/file1.md', (err, res2) => {
                         assert.notOk(err);
                         assert.ok(res2);
@@ -128,8 +128,8 @@ describe("Xejs tests", () => {
 
         renderer.render(config.fileDir + '/case_sensitive.md', (err, res) => {
             assert.notOk(err);
-            assert.match(res, /##\sCase\sSensitive\s*Hello World\s*\{\{message\}\}\s*\{\{MESSAGE\}\}\s*\{\{MeSSage\}\}/);
-            assert.match(res, /##\sCase\sInsensitive(\s*Hello World\s*){4}/);
+            assert.match(res, /## Case Sensitive\s*Hello World\s*{{message}}\s*{{MESSAGE}}\s*{{MeSSage}}/);
+            assert.match(res, /## Case Insensitive(\s*Hello World\s*){4}/);
             done();
         });
     });
@@ -148,7 +148,7 @@ describe("Xejs tests", () => {
                 assert.notOk(err);
                 assert.ok(res);
                 assert.match(res, /Hello World\s*Hello World/);
-                assert.notMatch(res, /<%-\s*msg\s*%>/);
+                assert.notMatch(res, /<%- *msg *%>/);
                 const renderer2 = new xejs({
                     options: {
                         ejsEscape: true
@@ -161,7 +161,7 @@ describe("Xejs tests", () => {
                     assert.ok(res);
                     assert.match(res, /Hello World/);
                     assert.notMatch(res, /Hello World\s*Hello World/);
-                    assert.match(res, /<%-\s*msg\s*%>/);
+                    assert.match(res, /<%- *msg *%>/);
                     done();
                 });
             });
@@ -272,11 +272,9 @@ describe("Xejs tests", () => {
                 assert.notOk(err);
                 assert.ok(res);
                 assert.match(res, /^Hello World\s+# Unclosed Tags/);
-                assert.match(res, /## Valid Tags\s*Hello World\s+##\sSecond\sfile\s*Second\sfile\scontent\s+Hello World Hello World\s+Hello World\nHello World\s+Hello World not\_parse/);
-                assert.match(res, /##\sInvalid\sTags\s+@message@\s+@\smessage\s+@message@message\s+test@message\s+@includefile2\.md\s+{{message}}/);
-                assert.match(res, /##\sComments\s+@\s#message\s+@@#message\s+@ # message\s+#message\s+a@#message space/);
-
-
+                assert.match(res, /## Valid Tags\s*Hello World\s+## Second file\s*Second file content\s+Hello World Hello World\s+Hello World\nHello World\s+Hello World not\_parse/);
+                assert.match(res, /## Invalid Tags\s+@message@\s+@\smessage\s+@message@message\s+test@message\s+@includefile2\.md\s+{{message}}/);
+                assert.match(res, /## Comments\s+@\s#message\s+@@#message\s+@ # message\s+#message\s+a@#message space/);
             });
         });
 
@@ -290,7 +288,7 @@ describe("Xejs tests", () => {
             renderer.renderFile(config.fileDir + '/custom_tags.md', (err, res) => {
                 assert.notOk(err);
                 assert.ok(res);
-                assert.notMatch(res, /\{\{\@[\s\S]*?\}\}/);
+                assert.notMatch(res, /{{@[\s\S]*?}}/);
                 assert.notMatch(res, /custom comment/);
                 assert.match(res, /## Custom Comment\s*<<# normal comment >>/);
                 done();
@@ -309,8 +307,8 @@ describe("Xejs tests", () => {
                 assert.notOk(err);
                 assert.ok(res);
                 assert.notMatch(res, /<<#[\s\S]*?>>/);
-                assert.notMatch(res, /normal\scomment/);
-                assert.match(res, /##\sCustom\sComment\s*\{\{\@\scustom\scomment\s\}\}/);
+                assert.notMatch(res, /normal comment/);
+                assert.match(res, /## Custom Comment\s*{{@ custom comment }}/);
                 done();
             });
         });
