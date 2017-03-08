@@ -57,7 +57,6 @@ describe("Xejs tests", () => {
     });
 
 
-
     it("Comment tags", (done) => {
         defaultRenderer.render(config.fileDir + '/comments.md', (err, res) => {
             assert.notOk(err);
@@ -65,6 +64,22 @@ describe("Xejs tests", () => {
             assert.match(res, /# Comment tags\s+# Not comment tags/);
             assert.match(res, /# Not comment tags\s+{{ # not comment tag}}\s*{{# Multiline\s+not\ssupported}}/);
             done();
+        });
+    });
+
+    it.skip("Tokens feedback with xejs injection", (done) => {
+        const renderer = new xejs({
+            tokens: [
+                [/messagea/, "'{{messageb}\}'"],
+                [/messageb/, "'Hello World'"]
+            ]
+        });
+        renderer.render(config.fileDir + '/tokens_feedback.md', (err, res) => {
+            assert.notOk(err);
+            assert.ok(res);
+            assert.match(res,/# Tokens feedback\s+{{messageb}}\s+Hello World\s+Hello World\s+{{messageb}}/);
+            done();
+
         });
     });
 
